@@ -310,8 +310,9 @@ void mleGPsepLm(GPsepLm* gplm, double *dmin, double *dmax, double *ab,
 		 const unsigned int maxit, int verb, double *p, int *its,
 		 char *msg, int *conv)
 {
+  int lbfgs_verb;
+  unsigned int k;
   double rmse;
-  int k, lbfgs_verb;
   double *dold;
   GPsep *gpsep = gplm->gpsep;
 
@@ -386,7 +387,7 @@ static double fcnnllik_sepLm_nug(double x, struct callinfo_sepLm_nug *info)
 }
 
 double Ropt_sepLm_nug(GPsepLm* gplm, double tmin, double tmax,
-		      double *ab, char *msg, int *its, int verb)
+		      double *ab, const char *msg, int *its, int verb)
 {
   double tnew, th;
   double Tol = SDEPS;
@@ -582,7 +583,7 @@ void jmleGPsepLm(GPsepLm *gplm, int maxit, double *dmin, double *dmax,
     *dits += dit[0];
     mleGPsepLm_nug(gplm, grange[0], grange[1], gab, verb, &git);
     *gits += git;
-    if((git <= 2 && (dit[0] <= gpsep->m+1 && *dconv == 0)) || *dconv > 1) break;
+    if((git <= 2 && (dit[0] <= (int)(gpsep->m+1) && *dconv == 0)) || *dconv > 1) break;
   }
   if(i == 100 && verb > 0) MYprintf(stderr,"max outer its (N=100) reached\n");
 

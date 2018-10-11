@@ -48,7 +48,7 @@ void deleteGPsepLm_index(unsigned int i)
 
 void deleteGPsepLms()
 {
-  int i;
+  unsigned int i;
   for(i=0; i<NGPsepLm; ++i)
   {
     if(gplms[i])

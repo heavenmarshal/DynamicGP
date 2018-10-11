@@ -441,7 +441,7 @@ static double fcn_nllik_sep_nug(double x, struct callinfo_sep_nug *info)
  */
 
 double Ropt_sep_nug(GPsep* gpsep, double tmin, double tmax,
-                   double *ab, char *msg, int *its, int verb)
+		    double *ab, const char *msg, int *its, int verb)
 {
   double tnew, th;
   double Tol = SDEPS;
@@ -695,8 +695,9 @@ void mymleGPsep(GPsep* gpsep, double* dmin, double *dmax, double *ab,
 		const unsigned int maxit, int verb, double *p, int *its,
 		char *msg, int *conv)
 {
+  int lbfgs_verb;
+  unsigned int k;
   double rmse;
-  int k, lbfgs_verb;
   double *dold;
 
   /* create structure for Brent_fmin */
@@ -774,7 +775,7 @@ void myjmleGPsep(GPsep *gpsep, int maxit, double *dmin, double *dmax,
     *dits += dit[0];
     mleGPsep_nug(gpsep, grange[0], grange[1], gab, verb, &git);
     *gits += git;
-    if((git <= 2 && (dit[0] <= gpsep->m+1 && *dconv == 0)) || *dconv > 1) break;
+    if((git <= 2 && (dit[0] <= (int)(gpsep->m+1) && *dconv == 0)) || *dconv > 1) break;
   }
   if(i == 100 && verb > 0) MYprintf(stderr,"max outer its (N=100) reached\n");
 
@@ -893,7 +894,7 @@ void pred_generic(const unsigned int n, const double phidf, double *Z,
 		  double **Ki, const unsigned int nn, double **k,
 		  double *mean, double **Sigma)
 {
-  int i, j;
+  unsigned int i, j;
   double **ktKi, **ktKik;
 
   /* ktKi <- t(k) %*% util$Ki */
@@ -1022,8 +1023,7 @@ void predGPsep_lite(GPsep* gpsep, unsigned int nn, double **XX, double *mean,
 void alcGPsep(GPsep *gpsep, unsigned int ncand, double **Xcand,
 	      unsigned int nref, double **Xref,  int verb, double *alc)
 {
-  unsigned int m, n;
-  int i;
+  unsigned int m, n, i;
   double **k; //, **Gmui;
   double *kx, *kxy, *gvec, *ktKikx; //, *ktGmui;
   double mui, df;

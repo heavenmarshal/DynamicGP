@@ -710,7 +710,7 @@ void vector_minmax(double* vin, int len, double *min, double *max)
 }
 
 int *nearest_indices(const unsigned int m, const unsigned int nref, double **Xref,
-		     const unsigned int n, double **X, int* segs, const int nsegs)
+		     const unsigned int n, double **X, unsigned int* segs, const int nsegs)
 
 {
   int i, close, start;
@@ -769,7 +769,6 @@ void fill_vector(double *vec, double scalar, unsigned int n)
 }
 double* new_const_vector(double scalar, unsigned int n)
 {
-  int i;
   double *vec;
   vec = new_vector(n);
   fill_vector(vec, scalar, n);

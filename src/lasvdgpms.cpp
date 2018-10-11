@@ -48,7 +48,8 @@ void jmlelasvdGPms(lasvdGP *lasvdgp, unsigned int numstarts,
   double **dstarts, *gstarts;
   double *optd, optg, optllik, llik;
   double *dmin, *dmax;
-  int i, j, dim, dits, gits, dconv;
+  int dim, dits, gits, dconv;
+  unsigned int i, j;
   getDs(lasvdgp->gpseps[0]->X,lasvdgp->n0,lasvdgp->m, &dstart, &ddmin, &ddmax,
 	&dab2);
   dab[0] = dab1;
@@ -155,9 +156,9 @@ void lasvdGPms_worker(double** X0, double **design, double **resp,
 		      unsigned int maxit, unsigned int verb, char* errlog,
 		      double **pmean, double **ps2, int *flags)
 {
-  int i;
+  unsigned int i;
   double *xpred;
-  lasvdGP *lasvdgp;
+  lasvdGP *lasvdgp = NULL;
   for(i = 0; i < M; ++i)
   {
       if(verb>0)
@@ -201,7 +202,7 @@ void lasvdGPms_worker(double** X0, double **design, double **resp,
 	  ofs.close();
 	}
       }
-      deletelasvdGP(lasvdgp);
+      if(lasvdgp) deletelasvdGP(lasvdgp);
   }
 }
 extern "C"{

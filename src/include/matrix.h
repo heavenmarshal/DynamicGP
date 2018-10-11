@@ -75,7 +75,7 @@ void zeroiv(int*v, unsigned int n);
 double sq(double x);
 void vector_minmax(double*, int, double*, double*);
 int *nearest_indices(const unsigned int, const unsigned int, double**,
-		     const unsigned int, double**, int*, const int);
+		     const unsigned int, double**, unsigned int*, const int);
 int fracvlen(double*, double, unsigned int);
 void sub_p_matrix_rows_col(double*, int*, double**,
 			   unsigned int, unsigned int);

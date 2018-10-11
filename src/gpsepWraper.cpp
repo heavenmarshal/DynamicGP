@@ -40,7 +40,7 @@ void deleteGPsep_index(unsigned int i)
 
 void deleteGPseps(void)
 {
-  int i;
+  unsigned int i;
   for(i=0; i<NGPsep; i++) {
     if(gpseps[i]) {
       MYprintf(MYstdout, "removing gpsep %d\n", i);
