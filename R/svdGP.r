@@ -61,7 +61,7 @@ fitgps_lmean <- function(resp,design,test,nstarts=5,d=NULL,g=0.001,type=c("cmean
     return(pred)
 
 }
-svdgpsepms <- function(X0,design,resp,frac=.95,nstart=5,
+svdgpsepms <- function(X0,design,resp,frac=.95,nstarts=5,
                        mtype=c("zmean","cmean","lmean"),
                        d=NULL,g=0.001,nthread=4,clutype="PSOCK")
 {
@@ -78,7 +78,7 @@ svdgpsepms <- function(X0,design,resp,frac=.95,nstart=5,
     varres <- varres/(lenresp+2)
     cl <- parallel::makeCluster(nthread,type=clutype)
     ret <- tryCatch(parallel::parApply(cl,coeff,2,fitgps,
-                                       design,X0,nstart,d,g,mtype),
+                                       design,X0,nstarts,d,g,mtype),
                     finally=parallel::stopCluster(cl))
     vmean <- matrix(unlist(sapply(ret,`[`,"mean")),nrow=numbas,byrow=TRUE)
     vsigma2 <- matrix(unlist(sapply(ret,`[`,"s2")),nrow=numbas,byrow=TRUE)
@@ -89,7 +89,7 @@ svdgpsepms <- function(X0,design,resp,frac=.95,nstart=5,
     return(ret)
 }
 ## a list of prediction sets do the dirty work
-svdgpsepmslist <- function(testlist,design,resp,frac=.95,nstart=5,
+svdgpsepmslist <- function(testlist,design,resp,frac=.95,nstarts=5,
                            mtype=c("zmean","cmean","lmean"),d=NULL,
                            g=0.001,nthread=4,clutype="PSOCK")
 {
@@ -100,7 +100,7 @@ svdgpsepmslist <- function(testlist,design,resp,frac=.95,nstart=5,
     idxlist <- mapply(seq,stest,etest,SIMPLIFY=FALSE)
 
     X0 <- do.call(rbind,testlist)
-    ret <- svdgpsepms(X0,design,resp,frac,nstart,mtype,d,g,nthread)
+    ret <- svdgpsepms(X0,design,resp,frac,nstarts,mtype,d,g,nthread)
     meanlist <- lapply(idxlist,getcols,ret$mean)
     sdlist <- lapply(idxlist,getcols,ret$sd)
     coefflist <- lapply(idxlist,getcols,ret$coeff)
@@ -126,9 +126,10 @@ svdGP <- function(design,resp,X0=design,nstarts=5,d=NULL,gstart=0.0001,
         rmean <- apply(resp,1,mean)
         resp <- resp-rmean
     }
-    ret <- svdgpsepms(X0,design,resp,frac,nstart,
-                      "zmean",d,g,nthread,clutype)
-    if(centralize) pmean <- ret$pmean+rmean
-    res <- list(pmean=pmean,ps2=ret$psd^2)
+    ret <- svdgpsepms(X0,design,resp,frac,nstarts,
+                      "zmean",d,gstart,nthread,clutype)
+    pmean <- ret$mean
+    if(centralize) pmean <- pmean+rmean
+    res <- list(pmean=pmean,ps2=ret$sd^2)
     return(res)
 }
