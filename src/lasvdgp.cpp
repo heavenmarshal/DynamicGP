@@ -422,6 +422,87 @@ void lasvdGP_worker(double** X0, double **design, double **resp,
     if(lasvdgp) deletelasvdGP(lasvdgp);
   }
 }
+void lasvdGP_omp(double** X0, double **design, double **resp,
+		 unsigned int M, unsigned int N, unsigned int m,
+		 unsigned int tlen, unsigned int nn, unsigned int n0,
+		 unsigned int nfea, unsigned int nsvd, unsigned int nadd,
+		 double frac, double gstart, unsigned int resvdThres,
+		 unsigned int every, unsigned int maxit, unsigned int verb, char* errlog,
+		 unsigned int nthread, double **pmean, double **ps2, int *flags)
+{
+  unsigned int mxth;
+#ifdef _OPENMP
+  mxth = omp_get_max_threads();
+#else
+  mxth = 1;
+#endif
+  if(nthread > mxth)
+  {
+    MYprintf(MYstdout, "NOTE: omp.threads(%d) > max(%d), using %d\n",
+      nthread, mxth, mxth);
+    nthread = mxth;
+  }
+#ifdef _OPENMP
+#pragma omp parallel num_threads(nthread)
+  {
+    unsigned int i, start, step;
+    double *xpred;
+    lasvdGP *lasvdgp = NULL;
+    start = omp_get_thread_num();
+    step  = nthread;
+#else
+    unsigned int i, start, step;
+    double *xpred;
+    lasvdGP *lasvdgp = NULL;
+    start = 0; step = 1;
+#endif
+    for(i = start; i < M; i+=step)
+    {
+      xpred = X0[i];
+      try{
+	lasvdgp = newlasvdGP(xpred, design, resp, N, m, tlen, nn, n0,
+			     nfea, nsvd, nadd, frac, gstart);
+	jmlelasvdGP(lasvdgp, maxit, verb);
+	iterlasvdGP(lasvdgp, resvdThres, every, maxit, verb);
+	predlasvdGP(lasvdgp, pmean[i], ps2[i]);
+	flags[i] = 0;
+      }
+      catch(cholException& e){
+	flags[i] = Chol;
+	fill_vector(pmean[i], NAN, tlen);
+	fill_vector(ps2[i], NAN, tlen);
+	if(*errlog != '\0'){
+	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
+	  ofs<<e;
+	  ofs.close();
+	}
+      }
+      catch(svdException& e){
+	flags[i] = SVD;
+	fill_vector(pmean[i], NAN, tlen);
+	fill_vector(ps2[i], NAN, tlen);
+	if(*errlog != '\0'){
+	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
+	  ofs<<e;
+	  ofs.close();
+	}
+      }
+      catch(optException& e){
+	flags[i] = Opt;
+	fill_vector(pmean[i], NAN, tlen);
+	fill_vector(ps2[i], NAN, tlen);
+	if(*errlog != '\0'){
+	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
+	  ofs<<e;
+	  ofs.close();
+	}
+      }
+      if(lasvdgp) deletelasvdGP(lasvdgp);
+    }
+#ifdef _OPENMP
+  }
+#endif
+}
 extern "C"{
   void lasvdGP_R(double *X0_, double *design_, double *resp_, int* M_,
 		 int *N_, int *m_, int *tlen_, int *nn_, int *n0_,
@@ -446,4 +527,29 @@ extern "C"{
     free(pmean);
     free(ps2);
   }
+  void lasvdGPomp_R(double *X0_, double *design_, double *resp_, int* M_,
+		    int *N_, int *m_, int *tlen_, int *nn_, int *n0_,
+		    int *nfea_, int* nsvd_, int *nadd_, double *frac_,
+		    double *gstart_, int *resvdThres_, int *every_,
+		    int *maxit_, int *verb_, char **errlog_, int *nthread_,
+		    double *pmean_, double *ps2_, int *flags_)
+{
+  double **X0, **design, **resp;
+  double **pmean, **ps2;
+  X0 = new_matrix_bones(X0_,*M_, *m_);
+  design = new_matrix_bones(design_,*N_,*m_);
+  resp = new_matrix_bones(resp_,*N_, *tlen_);
+  pmean = new_matrix_bones(pmean_,*M_,*tlen_);
+  ps2 = new_matrix_bones(ps2_,*M_,*tlen_);
+  lasvdGP_omp(X0,design,resp,*M_, *N_, *m_, *tlen_, *nn_, *n0_,
+	      *nfea_, *nsvd_, *nadd_, *frac_, *gstart_, *resvdThres_,
+	      *every_, *maxit_, *verb_, *errlog_, *nthread_,
+	      pmean, ps2, flags_);
+  free(X0);
+  free(design);
+  free(resp);
+  free(pmean);
+  free(ps2);
+}
+
 }
