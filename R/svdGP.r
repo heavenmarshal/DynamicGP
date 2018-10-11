@@ -25,7 +25,7 @@ fitgps_zmean <- function(resp,design,test,nstarts=5,d=NULL,g=0.001,type="zmean")
         llik[i] <- llikGPsep(gpis[i],dab=d$ab,gab=g$ab)
     }
     optidx <- which.max(llik)
-    pred <- predGPsep(gpis[optidx],test,TRUE)
+    pred <- predGPsep(gpis[optidx],test)
     for(i in 1:nstarts) deleteGPsep(gpis[i])
     return(pred)
 }
