@@ -5,7 +5,9 @@
 #include <fstream>
 #include "lasvdgp.hpp"
 #include "exceptions.hpp"
-
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 extern "C"{
 #include "matrix.h"
 #include "linalg.h"

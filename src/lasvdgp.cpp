@@ -7,6 +7,10 @@
 #include <cfloat>
 #include <fstream>
 #include <cmath>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 extern "C"{
 #include "matrix.h"
 #include "linalg.h"
@@ -554,23 +558,22 @@ extern "C"{
 		    double *gstart_, int *resvdThres_, int *every_,
 		    int *maxit_, int *verb_, char **errlog_, int *nthread_,
 		    double *pmean_, double *ps2_, int *flags_)
-{
-  double **X0, **design, **resp;
-  double **pmean, **ps2;
-  X0 = new_matrix_bones(X0_,*M_, *m_);
-  design = new_matrix_bones(design_,*N_,*m_);
-  resp = new_matrix_bones(resp_,*N_, *tlen_);
-  pmean = new_matrix_bones(pmean_,*M_,*tlen_);
-  ps2 = new_matrix_bones(ps2_,*M_,*tlen_);
-  lasvdGP_omp(X0,design,resp,*M_, *N_, *m_, *tlen_, *nn_, *n0_,
-	      *nfea_, *nsvd_, *nadd_, *frac_, *gstart_, *resvdThres_,
-	      *every_, *maxit_, *verb_, *errlog_, *nthread_,
-	      pmean, ps2, flags_);
-  free(X0);
-  free(design);
-  free(resp);
-  free(pmean);
-  free(ps2);
-}
-
+  {
+    double **X0, **design, **resp;
+    double **pmean, **ps2;
+    X0 = new_matrix_bones(X0_,*M_, *m_);
+    design = new_matrix_bones(design_,*N_,*m_);
+    resp = new_matrix_bones(resp_,*N_, *tlen_);
+    pmean = new_matrix_bones(pmean_,*M_,*tlen_);
+    ps2 = new_matrix_bones(ps2_,*M_,*tlen_);
+    lasvdGP_omp(X0,design,resp,*M_, *N_, *m_, *tlen_, *nn_, *n0_,
+		*nfea_, *nsvd_, *nadd_, *frac_, *gstart_, *resvdThres_,
+		*every_, *maxit_, *verb_, *errlog_, *nthread_,
+		pmean, ps2, flags_);
+    free(X0);
+    free(design);
+    free(resp);
+    free(pmean);
+    free(ps2);
+  }
 }
