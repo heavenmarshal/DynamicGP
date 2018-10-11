@@ -1,0 +1,5 @@
+useDynLib(testgp)
+
+export(lasvdgpWorker,gpsepms,predict.gpsepms,
+       gpseplmms,predict.gpseplmms,delete.gpsepms,
+       delete.gpseplmms)
