@@ -256,9 +256,16 @@ void lasvdGPms_omp(double** X0, double **design, double **resp,
 	fill_vector(pmean[i], NAN, tlen);
 	fill_vector(ps2[i], NAN, tlen);
 	if(*errlog != '\0'){
+#ifdef _OPENMP
+#pragma omp critical
+	  {
+#endif
 	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
 	  ofs<<e;
 	  ofs.close();
+#ifdef _OPENMP
+	  }
+#endif
 	}
       }
       catch(svdException& e){
@@ -266,9 +273,16 @@ void lasvdGPms_omp(double** X0, double **design, double **resp,
 	fill_vector(pmean[i], NAN, tlen);
 	fill_vector(ps2[i], NAN, tlen);
 	if(*errlog != '\0'){
+#ifdef _OPENMP
+#pragma omp critical
+	  {
+#endif
 	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
 	  ofs<<e;
 	  ofs.close();
+#ifdef _OPENMP
+	  }
+#endif
 	}
       }
       catch(optException& e){
@@ -276,9 +290,16 @@ void lasvdGPms_omp(double** X0, double **design, double **resp,
 	fill_vector(pmean[i], NAN, tlen);
 	fill_vector(ps2[i], NAN, tlen);
 	if(*errlog != '\0'){
+#ifdef _OPENMP
+#pragma omp critical
+	  {
+#endif
 	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
 	  ofs<<e;
 	  ofs.close();
+#ifdef _OPENMP
+	  }
+#endif
 	}
       }
       if(lasvdgp) deletelasvdGP(lasvdgp);
