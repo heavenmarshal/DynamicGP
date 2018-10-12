@@ -107,9 +107,10 @@ knnsvdGP <- function(design, resp, X0=design, nn=20, nsvd = nn, frac = .9,
 
 \seealso{\code{\link{lasvdGP}}, \code{\link{svdGP}}.}
 
-\references{Zhang, R., Lin, C. D. and Ranjan, P. (2018) \emph{Local
-    Gaussian Process Model for Large-scale Dynamic Computer
-    Experiments}, arXiv:1611.09488.}
+\references{Zhang, R., Lin, C. D. and Ranjan, P. (2018) \emph{Local Gaussian
+    Process Model for Large-scale Dynamic Computer Experiments},
+  Journal of Computational and Graphical Statistics, DOI:
+  10.1080/10618600.2018.1473778.}
 
 \examples{
 library("lhs")

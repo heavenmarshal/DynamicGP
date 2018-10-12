@@ -155,9 +155,11 @@ lasvdGP(design, resp, X0=design, n0=10, nn=20,
 
 \seealso{\code{\link{knnsvdGP}}, \code{\link{svdGP}}.}
 
-\references{ Zhang, R., Lin, C.D. and Ranjan, P. (2018) \emph{Local
-  Gaussian Process Model for Large-scale Dynamic Computer Experiments},
-  arXiv:1611.09488.}
+\references{Zhang, R., Lin, C. D. and Ranjan, P. (2018) \emph{Local Gaussian
+    Process Model for Large-scale Dynamic Computer Experiments},
+  Journal of Computational and Graphical Statistics, DOI:
+  10.1080/10618600.2018.1473778.
+}
 
 \examples{
 library("lhs")
