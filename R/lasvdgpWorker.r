@@ -196,6 +196,7 @@ lasvdgpmsParal <- function(X0, design, resp, n0, nn,
                     finally=parallel::stopCluster(cl))
     pmean <- matrix(unlist(sapply(ret,`[`,"pmean")),nrow=tlen)
     ps2 <- matrix(unlist(sapply(ret,`[`,"ps2")),nrow=tlen)
-    out <- list(pmean=pmean,ps2=ps2)
-    return(out)
+    flags <- unlist(sapply(ret,`[`,"flags"))
+    ret <- list(pmean=pmean,ps2=ps2,flags=flags)
+    return(ret)
 }

@@ -2,7 +2,7 @@ saEI <- function(xi,yi,yobs,nadd,candei,candest,func,...,
                  mtype=c("zmean","cmean","lmean"),
                  estsol=c("ESL2D","SL2D"),
                  frac=.9,gstart=0.0001,
-                 nthread=4)
+                 nthread=4, clutype="PSOCK")
 {
     if(.Machine$sizeof.pointer != 8)
     {
@@ -18,7 +18,8 @@ saEI <- function(xi,yi,yobs,nadd,candei,candest,func,...,
     {
         lbasis <- buildBasis(yi,frac)
         barval <-  min(apply((yobs-yi)^2,2,sum))
-        py <- svdgpsepms(candei,xi,yi,frac,mtype=mtype,nthread=nthread)
+        py <- svdgpsepms(candei,xi,yi,frac,mtype=mtype,
+                         nthread=nthread,clutype=clutype)
         info <- oeiinfo(py,yobs,barval)
         mm <- max(info,na.rm=TRUE)
         maxinfo[i] <- mm

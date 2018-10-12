@@ -31,7 +31,7 @@ oeiinfo <- function(py,yobs,barval)
               as.double(barval),as.double(iomemu2),
               as.double(bound), as.double(amat),
               as.double(mub2star), as.double(mumk),
-              info = double(n), PACKAGE="l2inv")
+              info = double(n), PACKAGE="DynamicGP")
     info <- ret$info-mumk
     return(info)
 }

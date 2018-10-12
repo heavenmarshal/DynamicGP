@@ -1,6 +1,6 @@
-Package: testgp
-Version: 1.0-1
-Date: 2018-10-09
+Package: DynamicGP
+Version: 1.1-1
+Date: 2018-10-12
 Author: Ru Zhang
 Depends: R (>= 2.14)
 NeedsCompilation: yes

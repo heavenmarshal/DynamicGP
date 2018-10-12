@@ -24,8 +24,8 @@ ESL2D <- function(design,resp,yobs,candidate,frac=.95,
         delete(gpobj)
         criter <- criter+reddsq[i]*(pred$s2+(pred$mean-cht[i])^2)
     }
-    xopt <- candidate[which.min(criter),]
-    return(xopt)
+    xhat <- candidate[which.min(criter),]
+    return(xhat)
 }
 SL2D <- function(design,resp,yobs,candidate,frac=.95,
                  mtype=c("zmean","cmean","lmean"),

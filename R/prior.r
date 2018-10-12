@@ -36,7 +36,7 @@ distance <- function(X1, X2=NULL)
                  n = as.integer(n1),
                  m = as.integer(m),
                  D = double(n1 * n1),
-                 PACKAGE = "testgp")
+                 PACKAGE = "DynamicGP")
 
       ## return the distance matrix
       return(matrix(outD$D, ncol=n1, byrow=TRUE))
@@ -58,7 +58,7 @@ distance <- function(X1, X2=NULL)
                  n2 = as.integer(n2),
                  m = as.integer(m),
                  D = double(n1 * n2),
-                 PACKAGE = "testgp")
+                 PACKAGE = "DynamicGP")
 
       ## return the distance matrix
       return(matrix(outD$D, ncol=n2, byrow=TRUE))
@@ -226,7 +226,7 @@ Igamma.inv <- function(a, y, lower=FALSE, log=FALSE)
             lower = as.integer(lower),
             log = as.integer(log),
             result = double(1),
-            PACKAGE = "testgp")
+            PACKAGE = "DynamicGP")
 
     return(r$result)
   }
