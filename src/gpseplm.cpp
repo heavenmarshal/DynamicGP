@@ -264,13 +264,6 @@ static double fcnnllik_sepLm(int n, double *p, struct callinfo_sepLm *info)
 
   llik = llikGPsepLm(info->gplm, info->ab, NULL);
 
-  if(info->verb > 0)
-  {
-    MYprintf(MYstdout, "fmin it=%d, d=(%g", info->its, gpsep->d[0]);
-    for(k=1; k<n; k++) MYprintf(MYstdout, " %g", gpsep->d[k]);
-    MYprintf(MYstdout, "), llik=%g\n", llik);
-  }
-
   return 0.0-llik;
 }
 
@@ -296,14 +289,6 @@ static void fcnndllik_sepLm(int n, double *p, double *df, struct callinfo_sepLm 
 
   for(k=0; k<n; ++k) df[k] = 0.0-df[k];
 
-  if(info->verb > 1)
-  {
-    MYprintf(MYstdout, "grad it=%d, d=(%g", info->its, gpsep->d[0]);
-    for(k=1; k<n; k++) MYprintf(MYstdout, " %g", gpsep->d[k]);
-    MYprintf(MYstdout, "), dd=(%g", df[0]);
-    for(k=1; k<n; k++) MYprintf(MYstdout, " %g", df[k]);
-    MYprintf(MYstdout, ")\n");
-  }
 }
 
 void mleGPsepLm(GPsepLm* gplm, double *dmin, double *dmax, double *ab,
@@ -327,12 +312,6 @@ void mleGPsepLm(GPsepLm* gplm, double *dmin, double *dmax, double *ab,
   dupv(p, gpsep->d, gpsep->m);
   dold = new_dup_vector(gpsep->d, gpsep->m);
 
-  if(verb > 0)
-  {
-    MYprintf(MYstdout, "(d=[%g", gpsep->d[0]);
-    for(k=1; k<gpsep->m; k++) MYprintf(MYstdout, ",%g", gpsep->d[k]);
-    MYprintf(MYstdout, "], llik=%g) ", llikGPsepLm(gplm, ab, NULL));
-  }
 
   /* set ifail argument and verb/trace arguments */
   *conv = 0;
@@ -348,7 +327,6 @@ void mleGPsepLm(GPsepLm* gplm, double *dmin, double *dmax, double *ab,
   /* check if parameters in p are new */
   rmse = 0.0;
   for(k=0; k<gpsep->m; k++) rmse += sq(p[k] - gpsep->d[k]);
-  if(sqrt(rmse/k) > SDEPS) MYprintf(MYstderr,"stored d not same as d-hat\n");
   rmse = 0.0;
   for(k=0; k<gpsep->m; k++) rmse += sq(p[k] - dold[k]);
   if(sqrt(rmse/k) < SDEPS) {
@@ -356,14 +334,6 @@ void mleGPsepLm(GPsepLm* gplm, double *dmin, double *dmax, double *ab,
     *conv = 0;
     its[0] = its[1] = 0;
   }
-
-  if(verb > 0)
-  {
-    MYprintf(MYstdout, "-> %d lbfgsb its -> (d=[%g", its[1], gpsep->d[0]);
-    for(k=1; k<gpsep->m; k++) MYprintf(MYstdout, ",%g", gpsep->d[k]);
-    MYprintf(MYstdout, "], llik=%g)\n", llikGPsepLm(gplm, ab, NULL));
-  }
-
 }
 
 struct callinfo_sepLm_nug
@@ -381,22 +351,19 @@ static double fcnnllik_sepLm_nug(double x, struct callinfo_sepLm_nug *info)
   GPsep *gpsep = info->gplm->gpsep;
   newparamsGPsepLm(info->gplm, gpsep->d, x);
   llik = llikGPsepLm(info->gplm, NULL, info->ab);
-  if(info->verb > 1)
-    MYprintf(MYstdout, "fmin it=%d, g=%g, llik=%g\n", info->its, gpsep->g, llik);
   return 0.0-llik;
 }
 
 double Ropt_sepLm_nug(GPsepLm* gplm, double tmin, double tmax,
 		      double *ab, const char *msg, int *its, int verb)
 {
-  double tnew, th;
+  double tnew;
   double Tol = SDEPS;
   GPsep *gpsep = gplm->gpsep;
   /* sanity check */
   assert(tmin < tmax);
 
   /* get parameter */
-  th = gpsep->g;
 
   /* create structure for Brent_fmin */
   struct callinfo_sepLm_nug info;
@@ -414,12 +381,10 @@ double Ropt_sepLm_nug(GPsepLm* gplm, double tmin, double tmax,
     if(tnew == tmin)
     { /* left boundary found */
       tmin *= 2;
-      if(verb > 0) MYprintf(MYstdout, "Ropt: tnew=tmin, increasing tmin=%g\n", tmin);
     }
     else
     { /* right boundary found */
       tmax /= 2.0;
-      if(verb > 0) MYprintf(MYstdout, "Ropt: tnew=tmax, decreasing tmax=%g\n", tmax);
     }
     /* check that boundaries still valid */
     if(tmin >= tmax) throw optException(__LINE__, __FILE__, tmin, tmax);
@@ -429,8 +394,6 @@ double Ropt_sepLm_nug(GPsepLm* gplm, double tmin, double tmax,
   if(gpsep->g != tnew) newparamsGPsepLm(gplm, gpsep->d, tnew);
 
   /* possible print message and return */
-  if(verb > 0) MYprintf(MYstdout, "Ropt %s: told=%g -[%d]-> tnew=%g\n",
-			msg, th, info.its, tnew);
 
   *its += info.its;
   return(tnew);
@@ -455,17 +418,11 @@ double mleGPsepLm_nug(GPsepLm* gplm, double tmin, double tmax, double *ab,
 
   /* check how close we are to tmin */
   if(fabs(th - tmin) < SDEPS) {
-    if(verb > 0) MYprintf(MYstdout, "(g=%g) -- starting too close to min (%g)\n", th, tmin);
     goto alldone;
   }
 
   /* initial likelihood calculation */
   llik_init = llikGPsepLm(gplm, dab, gab);
-
-  /* initial printing */
-  if(verb > 0)
-      MYprintf(MYstdout, "(g=%g, llik=%g) ", gpsep->g, llik_init);
-  if(verb > 1) MYprintf(MYstdout, "\n");
 
   while(1) { /* checking for improved llik */
     while(1) {  /* Newton step(s) */
@@ -478,7 +435,6 @@ double mleGPsepLm_nug(GPsepLm* gplm, double tmin, double tmax, double *ab,
         /* check for convergence by root */
         if(fabs(dllik) < SDEPS) {
           if(*its == 0) {
-            if(verb > 0) MYprintf(MYstdout, "-- Newton not needed\n");
             goto alldone;
           } else goto newtondone;
         }
@@ -515,18 +471,12 @@ double mleGPsepLm_nug(GPsepLm* gplm, double tmin, double tmax, double *ab,
       }
       newparamsGPsepLm(gplm, gpsep->d, tnew);
 
-      /* print progress */
-      if(verb > 1) MYprintf(MYstdout, "\ti=%d g=%g, c(a,b)=(%g,%g)\n",
-                            *its, tnew, ab[0], ab[1]);
-
       /* check for convergence, and break or update */
       if(fabs(tnew - th) < SDEPS) break;
       else th = tnew;
 
       /* check for max its */
       if(*its >= 100) {
-        if(verb > 0) MYprintf(MYstderr,"Newton 100/max iterations");
-        /* could also call Ropt here as last resort */
        goto alldone;
       }
     } /* end middle while -- Newton step */
@@ -535,7 +485,6 @@ double mleGPsepLm_nug(GPsepLm* gplm, double tmin, double tmax, double *ab,
 newtondone:
     llik_new = llikGPsepLm(gplm, dab, gab);
     if(llik_new < llik_init-SDEPS) {
-      if(verb > 0) MYprintf(MYstdout, "llik_new = %g\n", llik_new);
       llik_new = 0.0-DBL_MAX;
       if(!gpsep->dK && restoredKGP == 0) {
         deletedKGPsep(gpsep); restoredKGP = 1;
@@ -548,10 +497,6 @@ newtondone:
   /* capstone progress indicator */
 mledone:
   if(!R_FINITE(llik_new)) llik_new = llikGPsepLm(gplm, dab, gab);
-  if(verb > 0) {
-    MYprintf(MYstdout, "-> %d Newtons -> (g=%g, llik=%g)\n",
-            *its, gpsep->g, llik_new);
-  }
 
   /* return theta-value found */
 alldone:
@@ -585,8 +530,6 @@ void jmleGPsepLm(GPsepLm *gplm, int maxit, double *dmin, double *dmax,
     *gits += git;
     if((git <= 2 && (dit[0] <= (int)(gpsep->m+1) && *dconv == 0)) || *dconv > 1) break;
   }
-  if(i == 100 && verb > 0) MYprintf(stderr,"max outer its (N=100) reached\n");
-
   /* clean up */
   free(d);
 }

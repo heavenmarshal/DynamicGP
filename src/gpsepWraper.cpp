@@ -5,7 +5,6 @@
 #include "exceptions.hpp"
 extern"C"{
 #include "matrix.h"
-#include "rhelp.h"
 }
 unsigned int NGPsep = 0;
 GPsep **gpseps = NULL;
@@ -43,7 +42,6 @@ void deleteGPseps(void)
   unsigned int i;
   for(i=0; i<NGPsep; i++) {
     if(gpseps[i]) {
-      MYprintf(MYstdout, "removing gpsep %d\n", i);
       deleteGPsep(gpseps[i]);
     }
   }

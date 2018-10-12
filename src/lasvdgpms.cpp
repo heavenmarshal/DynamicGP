@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <cfloat>
 #include <cmath>
+#include <R.h>
 #include <fstream>
 #include "lasvdgp.hpp"
 #include "exceptions.hpp"
@@ -11,7 +12,6 @@
 extern "C"{
 #include "matrix.h"
 #include "linalg.h"
-#include "rhelp.h"
 #include "maximinLHS.h"
 }
 
@@ -163,8 +163,6 @@ void lasvdGPms_worker(double** X0, double **design, double **resp,
   lasvdGP *lasvdgp = NULL;
   for(i = 0; i < M; ++i)
   {
-      if(verb>0)
-	  MYprintf(MYstdout,"processing test #%d\n",i+1);
       xpred = X0[i];
       try{
 	lasvdgp = newlasvdGP(xpred, design, resp, N, m, tlen, nn, n0,
@@ -224,8 +222,7 @@ void lasvdGPms_omp(double** X0, double **design, double **resp,
 #endif
   if(nthread > mxth)
   {
-    MYprintf(MYstdout, "NOTE: omp.threads(%d) > max(%d), using %d\n",
-      nthread, mxth, mxth);
+    Rprintf("NOTE: omp.threads(%d) > max(%d), using %d\n",nthread, mxth, mxth);
     nthread = mxth;
   }
 #ifdef _OPENMP

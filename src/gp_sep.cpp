@@ -33,7 +33,6 @@ extern "C"{
 #include "util.h"
 #include "matrix.h"
 #include "linalg.h"
-#include "rhelp.h"
 #include "covar_sep.h"
 #include "lbfgsb.h"
 }
@@ -141,9 +140,6 @@ GPsep* buildGPsep(GPsep *gpsep, const int dK)
   Kchol = new_dup_matrix(gpsep->K, n, n);
   info = linalg_dposv(n, Kchol, gpsep->Ki);
   if(info) {
-#ifdef UNDEBUG
-    printMatrix(gpsep->K, n, n, stdout);
-#endif
     throw cholException(__LINE__, __FILE__, info, m, gpsep->g, gpsep->d);
   }
   gpsep->ldetK = log_determinant_chol(Kchol, n);
@@ -206,7 +202,6 @@ double llikGPsep(GPsep *gpsep, double *dab, double *gab)
 
   /* proportional to likelihood calculation */
   llik = 0.0 - 0.5*(((double) gpsep->n) * log(0.5 * gpsep->phi) + gpsep->ldetK);
-  // MYprintf(MYstdout, "d=%g, g=%g, phi=%g, llik=%g\n", gpsep->d, gpsep->g, gpsep->phi, llik);
   /* llik += lgamma(0.5*((double) gpsep->n)) - ((double) gpsep->n)*M_LN_SQRT_2PI; */
 
   /* if priors are being used; for lengthscale */
@@ -378,9 +373,6 @@ void newparamsGPsep(GPsep* gpsep, double *d, const double g)
   Kchol = new_dup_matrix(gpsep->K, n, n);
   info = linalg_dposv(n, Kchol, gpsep->Ki);
   if(info) {
-#ifdef UNDEBUG
-    printMatrix(gpsep->K, n, n, stdout);
-#endif
     delete_matrix(Kchol);
     throw cholException(__LINE__, __FILE__, info, m, gpsep->g, gpsep->d);
   }
@@ -427,8 +419,6 @@ static double fcn_nllik_sep_nug(double x, struct callinfo_sep_nug *info)
   (info->its)++;
   newparamsGPsep(info->gpsep, info->gpsep->d, x);
   llik = llikGPsep(info->gpsep, NULL, info->ab);
-  if(info->verb > 1)
-    MYprintf(MYstdout, "fmin it=%d, g=%g, llik=%g\n", info->its, info->gpsep->g, llik);
   return 0.0-llik;
 }
 
@@ -443,14 +433,14 @@ static double fcn_nllik_sep_nug(double x, struct callinfo_sep_nug *info)
 double Ropt_sep_nug(GPsep* gpsep, double tmin, double tmax,
 		    double *ab, const char *msg, int *its, int verb)
 {
-  double tnew, th;
+  double tnew;
   double Tol = SDEPS;
 
   /* sanity check */
   assert(tmin < tmax);
 
   /* get parameter */
-  th = gpsep->g;
+  /*th = gpsep->g;*/
 
   /* create structure for Brent_fmin */
   struct callinfo_sep_nug info;
@@ -465,10 +455,8 @@ double Ropt_sep_nug(GPsep* gpsep, double tmin, double tmax,
    if(tnew > tmin && tnew < tmax) break;
    if(tnew == tmin) { /* left boundary found */
     tmin *= 2;
-    if(verb > 0) MYprintf(MYstdout, "Ropt: tnew=tmin, increasing tmin=%g\n", tmin);
    } else { /* right boundary found */
     tmax /= 2.0;
-    if(verb > 0) MYprintf(MYstdout, "Ropt: tnew=tmax, decreasing tmax=%g\n", tmax);
   }
   /* check that boundaries still valid */
    if(tmin >= tmax) throw optException(__LINE__, __FILE__, tmin, tmax);
@@ -478,8 +466,6 @@ double Ropt_sep_nug(GPsep* gpsep, double tmin, double tmax,
   if(gpsep->g != tnew) newparamsGPsep(gpsep, gpsep->d, tnew);
 
   /* possible print message and return */
-  if(verb > 0) MYprintf(MYstdout, "Ropt %s: told=%g -[%d]-> tnew=%g\n",
-      msg, th, info.its, tnew);
 
   *its += info.its;
   return(tnew);
@@ -511,7 +497,6 @@ double mleGPsep_nug(GPsep* gpsep, double tmin, double tmax, double *ab,
 
   /* check how close we are to tmin */
   if(fabs(th - tmin) < SDEPS) {
-    if(verb > 0) MYprintf(MYstdout, "(g=%g) -- starting too close to min (%g)\n", th, tmin);
     goto alldone;
   }
 
@@ -519,9 +504,6 @@ double mleGPsep_nug(GPsep* gpsep, double tmin, double tmax, double *ab,
   llik_init = llikGPsep(gpsep, dab, gab);
 
   /* initial printing */
-  if(verb > 0)
-      MYprintf(MYstdout, "(g=%g, llik=%g) ", gpsep->g, llik_init);
-  if(verb > 1) MYprintf(MYstdout, "\n");
 
   while(1) { /* checking for improved llik */
     while(1) {  /* Newton step(s) */
@@ -534,7 +516,6 @@ double mleGPsep_nug(GPsep* gpsep, double tmin, double tmax, double *ab,
         /* check for convergence by root */
         if(fabs(dllik) < SDEPS) {
           if(*its == 0) {
-            if(verb > 0) MYprintf(MYstdout, "-- Newton not needed\n");
             goto alldone;
           } else goto newtondone;
         }
@@ -571,9 +552,6 @@ double mleGPsep_nug(GPsep* gpsep, double tmin, double tmax, double *ab,
       }
       newparamsGPsep(gpsep, gpsep->d, tnew);
 
-      /* print progress */
-      if(verb > 1) MYprintf(MYstdout, "\ti=%d g=%g, c(a,b)=(%g,%g)\n",
-                            *its, tnew, ab[0], ab[1]);
 
       /* check for convergence, and break or update */
       if(fabs(tnew - th) < SDEPS) break;
@@ -581,7 +559,6 @@ double mleGPsep_nug(GPsep* gpsep, double tmin, double tmax, double *ab,
 
       /* check for max its */
       if(*its >= 100) {
-        if(verb > 0) MYprintf(MYstdout,"Newton 100/max iterations");
         /* could also call Ropt here as last resort */
        goto alldone;
       }
@@ -591,7 +568,6 @@ double mleGPsep_nug(GPsep* gpsep, double tmin, double tmax, double *ab,
 newtondone:
     llik_new = llikGPsep(gpsep, dab, gab);
     if(llik_new < llik_init-SDEPS) {
-      if(verb > 0) MYprintf(MYstdout, "llik_new = %g\n", llik_new);
       llik_new = R_NegInf;
       if(!gpsep->dK && restoredKGP == 0) {
         deletedKGPsep(gpsep); restoredKGP = 1;
@@ -604,10 +580,6 @@ newtondone:
   /* capstone progress indicator */
 mledone:
   if(!R_FINITE(llik_new)) llik_new = llikGPsep(gpsep, dab, gab);
-  if(verb > 0) {
-    MYprintf(MYstdout, "-> %d Newtons -> (g=%g, llik=%g)\n",
-            *its, gpsep->g, llik_new);
-  }
 
   /* return theta-value found */
 alldone:
@@ -626,11 +598,11 @@ struct mycallinfo_sep {
 static double nllik_sep(int n, double *p, struct mycallinfo_sep *info)
 {
   double llik;
-  int psame, k, m;
+  int psame, k;
 
   /* sanity check */
-  m = info->gpsep->m;
-  assert(n == m);
+  // m = info->gpsep->m;
+  assert(n == info->gpsep->m);
 
   /* check if parameters in p are new */
   psame = 1;
@@ -646,14 +618,6 @@ static double nllik_sep(int n, double *p, struct mycallinfo_sep *info)
 
   /* evaluate likelihood with potentially new paramterization */
   llik = llikGPsep(info->gpsep, info->dab, info->gab);
-
-  /* progress meter */
-  if(info->verb > 0) {
-    MYprintf(MYstdout, "fmin it=%d, d=(%g", info->its, info->gpsep->d[0]);
-    for(k=1; k<m; k++) MYprintf(MYstdout, " %g", info->gpsep->d[k]);
-    if(n == m) MYprintf(MYstdout, "), llik=%g\n", llik);
-    else MYprintf(MYstdout, "), g=%g, llik=%g\n", info->gpsep->g, llik);
-  }
 
   /* done */
   return 0.0-llik;
@@ -682,14 +646,6 @@ static void ndllik_sep(int n, double *p, double *df, struct mycallinfo_sep *info
   /* negate values */
   for(k=0; k<n; k++) df[k] = 0.0-df[k];
 
-  /* progress meter */
-  if(info->verb > 1) {
-    MYprintf(MYstdout, "grad it=%d, d=(%g", info->its, info->gpsep->d[0]);
-    for(k=1; k<n; k++) MYprintf(MYstdout, " %g", info->gpsep->d[k]);
-    MYprintf(MYstdout, "), dd=(%g", df[0]);
-    for(k=1; k<n; k++) MYprintf(MYstdout, " %g", df[k]);
-    MYprintf(MYstdout, ")\n");
-  }
 }
 void mymleGPsep(GPsep* gpsep, double* dmin, double *dmax, double *ab,
 		const unsigned int maxit, int verb, double *p, int *its,
@@ -712,12 +668,6 @@ void mymleGPsep(GPsep* gpsep, double* dmin, double *dmax, double *ab,
   dupv(p, gpsep->d, gpsep->m);
   dold = new_dup_vector(gpsep->d, gpsep->m);
 
-  if(verb > 0) {
-    MYprintf(MYstdout, "(d=[%g", gpsep->d[0]);
-    for(k=1; k<gpsep->m; k++) MYprintf(MYstdout, ",%g", gpsep->d[k]);
-    MYprintf(MYstdout, "], llik=%g) ", llikGPsep(gpsep, ab, NULL));
-  }
-
   /* set ifail argument and verb/trace arguments */
   *conv = 0;
   if(verb <= 1) lbfgs_verb = 0;
@@ -731,20 +681,12 @@ void mymleGPsep(GPsep* gpsep, double* dmin, double *dmax, double *ab,
   /* check if parameters in p are new */
   rmse = 0.0;
   for(k=0; k<gpsep->m; k++) rmse += sq(p[k] - gpsep->d[k]);
-  if(sqrt(rmse/k) > SDEPS) MYprintf(MYstderr,"stored d not same as d-hat\n");
   rmse = 0.0;
   for(k=0; k<gpsep->m; k++) rmse += sq(p[k] - dold[k]);
   if(sqrt(rmse/k) < SDEPS) {
     sprintf(msg, "lbfgs initialized at minima");
     *conv = 0;
     its[0] = its[1] = 0;
-  }
-
-  /* print progress */
-  if(verb > 0) {
-    MYprintf(MYstdout, "-> %d lbfgsb its -> (d=[%g", its[1], gpsep->d[0]);
-    for(k=1; k<gpsep->m; k++) MYprintf(MYstdout, ",%g", gpsep->d[k]);
-    MYprintf(MYstdout, "], llik=%g)\n", llikGPsep(gpsep, ab, NULL));
   }
 
   /* clean up */
@@ -777,8 +719,6 @@ void myjmleGPsep(GPsep *gpsep, int maxit, double *dmin, double *dmax,
     *gits += git;
     if((git <= 2 && (dit[0] <= (int)(gpsep->m+1) && *dconv == 0)) || *dconv > 1) break;
   }
-  if(i == 100 && verb > 0) MYprintf(stderr,"max outer its (N=100) reached\n");
-
   /* clean up */
   free(d);
 }
@@ -877,9 +817,6 @@ void updateGPsep(GPsep* gpsep, unsigned int nn, double **XX, double *ZZ,
       Gmui = new_bigger_matrix(Gmui, n, n, n+1, n+1);
     }
 
-    /* progress meter? */
-    if(verb > 0)
-      MYprintf(MYstdout, "update_sep j=%d, n=%d, ldetK=%g\n", j+1, gpsep->n, gpsep->ldetK);
     n = gpsep->n; /* increment for next interation */
   }
 
@@ -992,8 +929,6 @@ void predGPsep_lite(GPsep* gpsep, unsigned int nn, double **XX, double *mean,
   /* *df = n - m - 1.0; */  /* only if estimating beta */
   if(sigma2) {
     phidf = gpsep->phi/(*df);
-    // printVector(ktKik, nn, MYstdout, MACHINE);
-    // MYprintf(MYstdout, "phi=%g, df=%g, phidf=%g, g=%g\n", gpsep->phi, *df, phidf, gpsep->g);
     for(i=0; i<nn; i++) sigma2[i] = phidf * (1.0 + gpsep->g - ktKik[i]);
   }
 
@@ -1050,11 +985,6 @@ void alcGPsep(GPsep *gpsep, unsigned int ncand, double **Xcand,
 
   /* calculate the ALC for each candidate */
   for(i=0; i<ncand; i++) {
-
-    /* progress meter */
-    if(verb > 0) 
-      MYprintf(MYstdout, "alcGPsep: calculating ALC for point %d of %d\n",
-        i+1, ncand);
 
     /* calculate the g vector, mui, and kxy */
     calc_g_mui_kxy_sep(m, Xcand[i], gpsep->X, n, gpsep->Ki, Xref, nref,

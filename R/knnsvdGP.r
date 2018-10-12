@@ -1,5 +1,5 @@
 knnsvdGP <- function(design, resp, X0=design, nn=20, nsvd = nn, frac = .9,
-                     gstart = 0.0001, nstarts = 5,centralize=FALSE, maxit=100, verb=0,
+                     gstart = 0.0001, nstarts = 5,centralize=FALSE, maxit=100,
                      errlog = "", nthread = 4, clutype="PSOCK")
 {
     if(.Machine$sizeof.pointer != 8)
@@ -29,7 +29,7 @@ knnsvdGP <- function(design, resp, X0=design, nn=20, nsvd = nn, frac = .9,
     workerstr <- paste("lasvdgp",mssuf,clsuf,sep="")
     workerfun <- get(workerstr)
     ret <- workerfun(X0,design,resp,nn,nn,frac=frac,gstart=gstart,nstarts=nstarts,
-                     maxit=maxit,verb=verb,errlog=errlog,nthread=nthread,clutype=clutype)
+                     maxit=maxit,verb=0,errlog=errlog,nthread=nthread,clutype=clutype)
     if(centralize) ret$pmean <- ret$pmean+rmean
     return(ret)
 }

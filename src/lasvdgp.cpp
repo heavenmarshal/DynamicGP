@@ -7,6 +7,7 @@
 #include <cfloat>
 #include <fstream>
 #include <cmath>
+#include <R.h>
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -14,7 +15,6 @@
 extern "C"{
 #include "matrix.h"
 #include "linalg.h"
-#include "rhelp.h"
 }
 
 static const double dab1 = 1.5;
@@ -382,8 +382,6 @@ void lasvdGP_worker(double** X0, double **design, double **resp,
   lasvdGP *lasvdgp = NULL;
   for(i = 0; i < M; ++i)
   {
-    if(verb>0)
-      MYprintf(MYstdout,"processing test #%d\n",i+1);
     xpred = X0[i];
     try{
       lasvdgp = newlasvdGP(xpred, design, resp, N, m, tlen, nn, n0,
@@ -442,8 +440,7 @@ void lasvdGP_omp(double** X0, double **design, double **resp,
 #endif
   if(nthread > mxth)
   {
-    MYprintf(MYstdout, "NOTE: omp.threads(%d) > max(%d), using %d\n",
-      nthread, mxth, mxth);
+    Rprintf("NOTE: omp.threads(%d) > max(%d), using %d\n", nthread, mxth, mxth);
     nthread = mxth;
   }
 #ifdef _OPENMP

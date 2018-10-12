@@ -26,7 +26,6 @@
 #define __LINALG_H__ 
 
 #include "matrix.h"
-#include "rhelp.h"
 
 #ifndef CBLAS_ENUM_DEFINED_H
    #define CBLAS_ENUM_DEFINED_H

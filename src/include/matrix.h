@@ -43,14 +43,12 @@ double ** new_bigger_matrix(double** M, unsigned int n1, unsigned int n2,
 			    unsigned int n1_new, unsigned int n2_new);
 void delete_matrix(double** m);
 void delete_imatrix(int** m);
-void printMatrix(double **M, unsigned int n, unsigned int col, FILE *outfile);
 void wmean_of_columns(double *mean, double **M, unsigned int n1, unsigned int n2,
 		      double *weight);
 void min_of_columns(double *s, double **M, unsigned int n1, unsigned int n2);
 double* ones(unsigned int n, double scale);
 int* iseq(double from, double to);
 double quick_select_index(double arr[], int iarr[], int n, int k);
-void matrix_to_file(const char* file_str, double** matrix, unsigned int n1, unsigned int n2);
 
 void sub_p_matrix(double **V, int *p, double **v,
 		  unsigned int nrows, unsigned int lenp,
@@ -68,7 +66,6 @@ double sumv(double *v, unsigned int n);
 int sumiv(int *iv, unsigned int n);
 int meaniv(int *iv, unsigned int n);
 void zerov(double*v, unsigned int n);
-void printVector(double *v, unsigned int n, FILE *outfile, PRINT_PREC type);
 int *new_ivector(unsigned int n);
 void dupiv(int *iv_new, int *iv, unsigned int n);
 void zeroiv(int*v, unsigned int n);

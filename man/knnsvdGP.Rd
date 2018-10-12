@@ -13,7 +13,7 @@
 
 \usage{
 knnsvdGP(design,resp, X0=design, nn=20, nsvd = nn, frac = .9,
-         gstart = 0.0001, nstarts = 5,centralize=FALSE, maxit=100, verb=0,
+         gstart = 0.0001, nstarts = 5,centralize=FALSE, maxit=100,
          errlog = "", nthread = 4, clutype="PSOCK")
 }
 
@@ -64,11 +64,6 @@ knnsvdGP(design,resp, X0=design, nn=20, nsvd = nn, frac = .9,
     Maximum number of iterations in the numerical optimization algorithm
     for maximizing the posterior density function. The default value is
     100.
-  }
-  \item{verb}{
-    A nonnegative integer indicates the level of printing on the
-    screen. If \code{verb=0} the function is executed in silence. The
-    default value is 0.
   }
   \item{errlog}{
     The path of a log file that records the errors occur in the process of fitting

@@ -22,8 +22,6 @@
  ********************************************************************************/
 
 
-#include "rhelp.h"
-
 #include "matrix.h"
 #include <assert.h>
 #include <math.h>
@@ -241,29 +239,6 @@ void delete_imatrix(int** m)
 }
 
 /*
- * print an n x col matrix allocated as above out an opened outfile.
- * actually, this routine can print any double**
- */
-
-void printMatrix(double **M, unsigned int n, unsigned int col, FILE *outfile)
-{
-  int i,j;
-  assert(outfile);
-  if(n > 0 && col > 0) assert(M);
-  for(i=0; i<n; i++) {
-    for(j=0; j<col; j++) {
-#ifdef DEBUG
-      if(j==col-1) MYprintf(outfile, "%.20f\n", M[i][j]);
-      else MYprintf(outfile, "%.20f ", M[i][j]);
-#else
-      if(j==col-1) MYprintf(outfile, "%g\n", M[i][j]);
-      else MYprintf(outfile, "%g ", M[i][j]);
-#endif
-    }
-  }
-}
-
-/*
  * wmean_of_columns:
  *
  * fill mean[n2] with the weighted mean of the columns of M (n1 x n2);
@@ -445,20 +420,6 @@ double quick_select_index(double arr[], int iarr[], int n, int k)
 
 #undef ELEM_SWAP
 
-/*
- * open file with the given name
- * and print the passed matrix to it
- */
-
-void matrix_to_file(const char* file_str, double** matrix, unsigned int n1, unsigned int n2)
-{
-  FILE* MOUT;
-
-  MOUT = fopen(file_str, "w");
-  assert(MOUT);
-  printMatrix(matrix, n1, n2, MOUT);
-  fclose(MOUT);
-}
 
 /*
  * sub_p_matrix:
@@ -626,18 +587,6 @@ void zerov(double*v, unsigned int n)
 {
   unsigned int i;
   for(i=0; i<n; i++) v[i] = 0;
-}
-
-/*
- * printing a vector out to outfile
- */
-
-void printVector(double *v, unsigned int n, FILE *outfile, PRINT_PREC type)
-{
-  unsigned int i;
-  if(type==HUMAN) for(i=0; i<n; i++) MYprintf(outfile, "%g ", v[i]);
-  else for(i=0; i<n; i++) MYprintf(outfile, "%.20f ", v[i]); /* either human or machine */
-  MYprintf(outfile, "\n");
 }
 
 

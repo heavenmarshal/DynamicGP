@@ -20,7 +20,7 @@ lasvdGP(design, resp, X0=design, n0=10, nn=20,
         nfea = min(1000,nrow(design)),
         nsvd = nn, nadd = 1, frac = .9, gstart = 0.0001,
         resvdThres = min(5, nn-n0), every = min(5,nn-n0),
-        nstarts = 5,centralize=FALSE, maxit=100, verb=0,
+        nstarts = 5,centralize=FALSE, maxit=100,
         errlog = "", nthread = 4, clutype="PSOCK")
 }
 
@@ -105,11 +105,6 @@ lasvdGP(design, resp, X0=design, n0=10, nn=20,
     Maximum number of iterations in the numerical optimization algorithm
     for maximizing the posterior density function. The default value is
     100.
-  }
-  \item{verb}{
-    A nonnegative integer indicates the level of printing on the
-    screen. If \code{verb=0} the function is executed in silence. The
-    default value is 0.
   }
   \item{errlog}{
     The path of a log file that records the errors occur in the process of fitting

@@ -26,7 +26,6 @@
 #include <assert.h>
 #include "linalg.h"
 #include "matrix.h"
-#include "rhelp.h"
 
 #ifdef FORTPACK
 char uplo = 'U';
