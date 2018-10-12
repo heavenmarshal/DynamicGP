@@ -133,3 +133,4 @@ flycheck_*.el
 # windows R compiliation folder
 src-i386
 src-x64
+src/Makevars
