@@ -4,13 +4,18 @@ evallogpost <- function(y,xi,tlen)
     loglik <- -0.5*log(2*pi)-0.5*tlen
     loglik <- loglik - 0.5 * tlen* log(dev)
 }
-lasvdinv <- function(design, resp, xi, nstarts, nmc, n0, nn, noiseVar=0,
-                     liktype=c("profile","fixvar"), kertype=c("normal","adaptive"),
-                     nfea = min(1000,nrow(design)), nsvd=nn,resvdThres = min(5, nn-n0),
-                     every = min(5,nn-n0), frac = .95, gstart = 0.0001,
-                     nthread = 4, adpthres=100*ncol(design), eps=1e-5, sval=5.76/ncol(design)^2,
-                     lb = rep(0,ncol(design)), ub = rep(1,ncol(design)), kersigfrac=.05)
+lasvdGPMCMC <- function(design, resp, xi, nstarts, nmc, n0, nn, noiseVar=0,
+                        liktype=c("profile","fixvar"), kertype=c("normal","adaptive"),
+                        nfea = min(1000,nrow(design)), nsvd=nn,resvdThres = min(5, nn-n0),
+                        every = min(5,nn-n0), frac = .95, gstart = 0.0001,
+                        nthread = 4, adpthres=100*ncol(design), eps=1e-5, sval=5.76/ncol(design)^2,
+                        lb = rep(0,ncol(design)), ub = rep(1,ncol(design)), kersigfrac=.005)
 {
+    if(.Machine$sizeof.pointer != 8)
+    {
+        cat("the current version only supports 64-bit version of R\n")
+        return(NULL)
+    }
     liktype <- match.arg(liktype)
     kertype <- match.arg(kertype)
     likcode <- if(liktype=="profile") 101 else 102

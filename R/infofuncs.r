@@ -35,11 +35,3 @@ oeiinfo <- function(py,yobs,barval)
     info <- ret$info-mumk
     return(info)
 }
-mininfo <- function(py,cmin)
-{
-    ave <- py$mean
-    se <- sqrt(py$s2)
-    norm <- (cmin-ave)/se
-    info <- ifelse(is.infinite(norm),0,
-                   se*(norm*pnorm(norm)+dnorm(norm)))
-}

@@ -1,9 +1,9 @@
-fitgps_zmean <- function(resp,design,test,nstarts=5,d=NULL,g=0.001,type="zmean")
+fitgps_zmean <- function(resp,design,test,nstarts=5,d=NULL,gstart=0.0001,type="zmean")
 {
     din <- ncol(design)
     if(!is.matrix(test)) test <- matrix(test,ncol=din)
     d <- darg(d,design)
-    g <- garg(g,resp)
+    g <- garg(gstart,resp)
     parb <- lhs::maximinLHS(nstarts,din+1)
     ranb <- parb[,1:din,drop=FALSE]
     nugb <- parb[,din+1]
@@ -29,12 +29,12 @@ fitgps_zmean <- function(resp,design,test,nstarts=5,d=NULL,g=0.001,type="zmean")
     for(i in 1:nstarts) deleteGPsep(gpis[i])
     return(pred)
 }
-fitgps_lmean <- function(resp,design,test,nstarts=5,d=NULL,g=0.001,type=c("cmean","lmean"))
+fitgps_lmean <- function(resp,design,test,nstarts=5,d=NULL,gstart=0.0001,type=c("cmean","lmean"))
 {
     din <- ncol(design)
     if(!is.matrix(test)) test <- matrix(test,ncol=din)
     d <- darg(d,design)
-    g <- garg(g,resp)
+    g <- garg(gstart,resp)
     parb <- lhs::maximinLHS(nstarts,din+1)
     ranb <- parb[,1:din,drop=FALSE]
     nugb <- parb[,din+1]
@@ -61,9 +61,9 @@ fitgps_lmean <- function(resp,design,test,nstarts=5,d=NULL,g=0.001,type=c("cmean
     return(pred)
 
 }
-svdgpsepms <- function(X0,design,resp,frac=.95,nstarts=5,
+svdgpsepms <- function(X0,design,resp,frac=.9,nstarts=5,
                        mtype=c("zmean","cmean","lmean"),
-                       d=NULL,g=0.001,nthread=4,clutype="PSOCK")
+                       d=NULL,gstart=0.0001,nthread=4,clutype="PSOCK")
 {
     mtype <- match.arg(mtype)
     fitname <- if(mtype=="cmean") "lmean" else mtype
@@ -78,7 +78,7 @@ svdgpsepms <- function(X0,design,resp,frac=.95,nstarts=5,
     varres <- varres/(lenresp+2)
     cl <- parallel::makeCluster(nthread,type=clutype)
     ret <- tryCatch(parallel::parApply(cl,coeff,2,fitgps,
-                                       design,X0,nstarts,d,g,mtype),
+                                       design,X0,nstarts,d,gstart,mtype),
                     finally=parallel::stopCluster(cl))
     vmean <- matrix(unlist(sapply(ret,`[`,"mean")),nrow=numbas,byrow=TRUE)
     vsigma2 <- matrix(unlist(sapply(ret,`[`,"s2")),nrow=numbas,byrow=TRUE)
@@ -88,32 +88,7 @@ svdgpsepms <- function(X0,design,resp,frac=.95,nstarts=5,
                 basis=lbasis$basis,varres=varres)
     return(ret)
 }
-## a list of prediction sets do the dirty work
-svdgpsepmslist <- function(testlist,design,resp,frac=.95,nstarts=5,
-                           mtype=c("zmean","cmean","lmean"),d=NULL,
-                           g=0.001,nthread=4,clutype="PSOCK")
-{
-    testlist <- as.matrix(testlist)
-    ntest <- sapply(testlist,nrow)
-    etest <- cumsum(ntest)
-    stest <- c(0,ntest[1:(length(ntest)-1)])+1
-    idxlist <- mapply(seq,stest,etest,SIMPLIFY=FALSE)
-
-    X0 <- do.call(rbind,testlist)
-    ret <- svdgpsepms(X0,design,resp,frac,nstarts,mtype,d,g,nthread)
-    meanlist <- lapply(idxlist,getcols,ret$mean)
-    sdlist <- lapply(idxlist,getcols,ret$sd)
-    coefflist <- lapply(idxlist,getcols,ret$coeff)
-    coeffs2list <- lapply(idxlist,getcols,ret$coeffs2)
-    commonlist <- list(ret$d2,ret$basis,ret$varres)
-    retlist <- mapply(list,meanlist,sdlist,coefflist,coeffs2list,
-                      SIMPLIFY=FALSE)
-    retlist <- lapply(retlist,c,commonlist)
-    retlist <- lapply(retlist,rename,names(ret))
-    return(retlist)
-}
-
-svdGP <- function(design,resp,X0=design,nstarts=5,d=NULL,gstart=0.0001,
+svdGP <- function(design,resp,X0=design,nstarts=5,gstart=0.0001,
                   frac=.9,centralize=FALSE,nthread=4,clutype="PSOCK")
 {
     if(.Machine$sizeof.pointer != 8)
@@ -127,7 +102,7 @@ svdGP <- function(design,resp,X0=design,nstarts=5,d=NULL,gstart=0.0001,
         resp <- resp-rmean
     }
     ret <- svdgpsepms(X0,design,resp,frac,nstarts,
-                      "zmean",d,gstart,nthread,clutype)
+                      "zmean",NULL,gstart,nthread,clutype)
     pmean <- ret$mean
     if(centralize) pmean <- pmean+rmean
     res <- list(pmean=pmean,ps2=ret$sd^2)
