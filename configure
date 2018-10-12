@@ -1,4 +1,4 @@
-OSXFLAG=`${R_HOME}/bin/Rscript config.r`
+OSXFLAG=`${R_HOME}/bin/Rscript inst/config.r`
 if [ "$OSXFLAG" = "FALSE" ]; then
     OMPFLAG="\$(SHLIB_OPENMP_CFLAGS)"
 fi

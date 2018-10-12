@@ -12,9 +12,9 @@
   library.}
 
 \usage{
-knnsvdGP <- function(design, resp, X0=design, nn=20, nsvd = nn, frac = .9,
-                     gstart = 0.0001, nstarts = 5,centralize=FALSE, maxit=100, verb=0,
-                     errlog = "", nthread = 4, clutype="PSOCK")
+knnsvdGP(design,resp, X0=design, nn=20, nsvd = nn, frac = .9,
+         gstart = 0.0001, nstarts = 5,centralize=FALSE, maxit=100, verb=0,
+         errlog = "", nthread = 4, clutype="PSOCK")
 }
 
 \arguments{
