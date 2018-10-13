@@ -32,7 +32,7 @@ svdGP(design,resp,X0=design,nstarts=5,gstart=0.0001,
   \item{gstart}{
     The starting number and upper bound of for estimating the nugget
     parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the nugget
-    will be fixed at \code{sqrt(.Machine$double.eps)}, since the it is
+    will be fixed at \code{sqrt(.Machine$double.eps)}, since it is
     the lower bound of the nugget term. The default value is 0.0001.
   }
   \item{frac}{

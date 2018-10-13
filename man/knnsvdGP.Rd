@@ -8,7 +8,7 @@
   local neighbourhood sets consist of \code{nn} points which are selected
   by the Euclidean distance with respect to the test points. See Zhang et
   al. (2018) for details.This function supports the
-  parallelization of via both the R packages "parallel" and the OpenMP
+  parallelization via both the R packages "parallel" and the OpenMP
   library.}
 
 \usage{
@@ -45,7 +45,7 @@ knnsvdGP(design,resp, X0=design, nn=20, nsvd = nn, frac = .9,
   \item{gstart}{
     The starting number and upper bound of for estimating the nugget
     parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the nugget
-    will be fixed at \code{sqrt(.Machine$double.eps)}, since the it is
+    will be fixed at \code{sqrt(.Machine$double.eps)}, since it is
     the lower bound of the nugget term. The default value is 0.0001.
   }
   \item{nstarts}{
@@ -91,6 +91,14 @@ knnsvdGP(design,resp, X0=design, nn=20, nsvd = nn, frac = .9,
   \item{ps2}{
     An \eqn{L} by \eqn{M} matrix of posterior predicted variance for the response at
     the test set \code{X0}.
+  }
+  \item{flags}{
+    An array of integers of length \eqn{M} which indicates the status for fitting the
+    local SVD-based GP models for each of the \eqn{M} input points in the test set.
+    The value \eqn{0} indicates successful fitting, the value \eqn{1} indicates an
+    error in Cholesky decomposition of the correlation matrices, the value \eqn{2}
+    indicates an error in SVD of the local response matrix, the value \eqn{3} indicates
+    an error in optimizing the nugget term.
   }
 }
 

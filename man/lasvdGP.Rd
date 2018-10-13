@@ -12,7 +12,7 @@
   respect to the test points. The remaining \code{nn}-\code{n0}
   neighborhood points are selected sequentially by a greedy algorithm
   proposed by Zhang et al. (2018). This function supports the
-  parallelization of via both the R packages "parallel" and the OpenMP
+  parallelization via both the R packages "parallel" and the OpenMP
   library.}
 
 \usage{
@@ -71,7 +71,7 @@ lasvdGP(design, resp, X0=design, n0=10, nn=20,
   \item{gstart}{
     The starting number and upper bound of for estimating the nugget
     parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the nugget
-    will be fixed at \code{sqrt(.Machine$double.eps)}, since the it is
+    will be fixed at \code{sqrt(.Machine$double.eps)}, since it is
     the lower bound of the nugget term. The default value is 0.0001.
   }
 
@@ -133,12 +133,12 @@ lasvdGP(design, resp, X0=design, n0=10, nn=20,
     the test set \code{X0}.
   }
   \item{flags}{
-    An array of integers of length \eqn{M} which indicate the status for fitting the
+    An array of integers of length \eqn{M} which indicates the status for fitting the
     local SVD-based GP models for each of the \eqn{M} input points in the test set.
-    The value \eqn{0} indicates successful fitting, the value \eqn{1} indicates the
+    The value \eqn{0} indicates successful fitting, the value \eqn{1} indicates an
     error in Cholesky decomposition of the correlation matrices, the value \eqn{2}
-    indicates the error in SVD of the local response matrix, the value \eqn{3} indicates
-    the error in optimizing the nugget term.
+    indicates an error in SVD of the local response matrix, the value \eqn{3} indicates
+    an error in optimizing the nugget term.
   }
 }
 

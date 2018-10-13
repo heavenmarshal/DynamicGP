@@ -33,7 +33,7 @@ SL2D(design,resp,yobs,candidate,frac=.95,
   }
 
   \item{candidate}{ An \eqn{M} by \eqn{d} matrix of \eqn{M} candidate points
-    on which the estimated solution to the inverse problem is obtained.
+    on which the estimated solution to the inverse problem is extracted.
   }
 
   \item{frac}{
@@ -41,14 +41,14 @@ SL2D(design,resp,yobs,candidate,frac=.95,
     number of SVD bases. The default value is 0.9.
   }
 
-  \item{mtype}{ The type of mean functions for the SVD-based GP models. The choice
+  \item{mtype}{ The type of mean functions for the GP models. The choice
     "zmean" denotes zero-mean, "cmean" indicates constant-mean, "lmean" indicates
     linear-mean.
   }
   \item{gstart}{
     The starting number and upper bound of for estimating the nugget
     parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the nugget
-    will be fixed at \code{sqrt(.Machine$double.eps)}, since the it is
+    will be fixed at \code{sqrt(.Machine$double.eps)}, since it is
     the lower bound of the nugget term. The default value is 0.0001.
   }
 }
