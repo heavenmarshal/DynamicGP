@@ -6,6 +6,7 @@
 #include <fstream>
 #include "lasvdgp.hpp"
 #include "exceptions.hpp"
+#include "cpputil.hpp"
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -178,7 +179,8 @@ void lasvdGPms_worker(double** X0, double **design, double **resp,
 	fill_vector(ps2[i], NAN, tlen);
 	if(*errlog != '\0'){
 	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
-	  ofs<<e;
+	  writeVector(ofs,"xpred",xpred,m);
+	  ofs<<"\n"<<e;
 	  ofs.close();
 	}
       }
@@ -188,7 +190,8 @@ void lasvdGPms_worker(double** X0, double **design, double **resp,
 	fill_vector(ps2[i], NAN, tlen);
 	if(*errlog != '\0'){
 	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
-	  ofs<<e;
+	  writeVector(ofs,"xpred",xpred,m);
+	  ofs<<"\n"<<e;
 	  ofs.close();
 	}
       }
@@ -198,7 +201,8 @@ void lasvdGPms_worker(double** X0, double **design, double **resp,
 	fill_vector(ps2[i], NAN, tlen);
 	if(*errlog != '\0'){
 	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
-	  ofs<<e;
+	  writeVector(ofs,"xpred",xpred,m);
+	  ofs<<"\n"<<e;
 	  ofs.close();
 	}
       }
@@ -260,7 +264,8 @@ void lasvdGPms_omp(double** X0, double **design, double **resp,
 	  {
 #endif
 	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
-	  ofs<<e;
+	  writeVector(ofs,"xpred",xpred,m);
+	  ofs<<"\n"<<e;
 	  ofs.close();
 #ifdef _OPENMP
 	  }
@@ -277,7 +282,8 @@ void lasvdGPms_omp(double** X0, double **design, double **resp,
 	  {
 #endif
 	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
-	  ofs<<e;
+	  writeVector(ofs,"xpred",xpred,m);
+	  ofs<<"\n"<<e;
 	  ofs.close();
 #ifdef _OPENMP
 	  }
@@ -294,7 +300,8 @@ void lasvdGPms_omp(double** X0, double **design, double **resp,
 	  {
 #endif
 	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
-	  ofs<<e;
+	  writeVector(ofs,"xpred",xpred,m);
+	  ofs<<"\n"<<e;
 	  ofs.close();
 #ifdef _OPENMP
 	  }

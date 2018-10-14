@@ -1,6 +1,6 @@
 #include<cassert>
 #include<algorithm>
-#include "quantile.hpp"
+#include "cpputil.hpp"
 
 double quantile(double* vin, double quan, int len)
 {
@@ -10,3 +10,13 @@ double quantile(double* vin, double quan, int len)
   std::nth_element(vin, vin+pos, vin+len);
   return vin[pos];
 }
+
+void writeVector(std::ostream& os, std::string name, double* vec, int len)
+{
+  if(len<=0) return;
+  os<<name<<"=("<<vec[0];
+  for(int i = 1; i< len; ++i)
+    os<<","<<vec[i];
+  os<<")";
+}
+

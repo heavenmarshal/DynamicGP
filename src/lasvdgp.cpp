@@ -1,5 +1,5 @@
 #include "lasvdgp.hpp"
-#include "quantile.hpp"
+#include "cpputil.hpp"
 #include "exceptions.hpp"
 #include "gp_sep.hpp"
 #include <cassert>
@@ -397,7 +397,8 @@ void lasvdGP_worker(double** X0, double **design, double **resp,
       fill_vector(ps2[i], NAN, tlen);
       if(*errlog != '\0'){
 	std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
-	ofs<<e;
+	writeVector(ofs,"xpred",xpred,m);
+	ofs<<"\n"<<e;
 	ofs.close();
       }
     }
@@ -407,7 +408,8 @@ void lasvdGP_worker(double** X0, double **design, double **resp,
       fill_vector(ps2[i], NAN, tlen);
       if(*errlog != '\0'){
 	std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
-	ofs<<e;
+	writeVector(ofs,"xpred",xpred,m);
+	ofs<<"\n"<<e;
 	ofs.close();
       }
     }
@@ -417,7 +419,8 @@ void lasvdGP_worker(double** X0, double **design, double **resp,
       fill_vector(ps2[i], NAN, tlen);
       if(*errlog != '\0'){
 	std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
-	ofs<<e;
+	writeVector(ofs,"xpred",xpred,m);
+	ofs<<"\n"<<e;
 	ofs.close();
       }
     }
@@ -478,7 +481,8 @@ void lasvdGP_omp(double** X0, double **design, double **resp,
 	  {
 #endif
 	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
-	  ofs<<e;
+	  writeVector(ofs,"xpred",xpred,m);
+	  ofs<<"\n"<<e;
 	  ofs.close();
 #ifdef _OPENMP
 	  }
@@ -495,7 +499,8 @@ void lasvdGP_omp(double** X0, double **design, double **resp,
 	  {
 #endif
 	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
-	  ofs<<e;
+	  writeVector(ofs,"xpred",xpred,m);
+	  ofs<<"\n"<<e;
 	  ofs.close();
 #ifdef _OPENMP
 	  }
@@ -512,7 +517,8 @@ void lasvdGP_omp(double** X0, double **design, double **resp,
 	  {
 #endif
 	  std::ofstream ofs(errlog, std::ofstream::out | std::ofstream::app);
-	  ofs<<e;
+	  writeVector(ofs,"xpred",xpred,m);
+	  ofs<<"\n"<<e;
 	  ofs.close();
 #ifdef _OPENMP
 	  }
