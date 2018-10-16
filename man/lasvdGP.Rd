@@ -134,7 +134,7 @@ lasvdGP(design, resp, X0=design, n0=10, nn=20,
     the test set \code{X0}.
   }
   \item{flags}{
-    An array of integers of length \eqn{M} which indicates the status for fitting the
+    A vector of integers of length \eqn{M} which indicates the status for fitting the
     local SVD-based GP models for each of the \eqn{M} input points in the test set.
     The value \eqn{0} indicates successful fitting, the value \eqn{1} indicates an
     error in Cholesky decomposition of the correlation matrices, the value \eqn{2}

@@ -39,8 +39,8 @@
   }
 
   \item{func}{ An R function of the dynamic computer simulator. The
-  first argument of \code{func} should be an array of \eqn{d}-dimensional
-  inputs. The simulator \code{func} should return an array of length
+  first argument of \code{func} should be a vector of \eqn{d}-dimensional
+  inputs. The simulator \code{func} should return a vector of length
   \eqn{L} as the output.}
 
 \item{...}{ The remaining arguments of the simulator \code{func}.}
@@ -83,7 +83,7 @@
   \item{yy}{The response matrix collected on the design set \code{xx}.}
   \item{xhat}{The estimated solution to the inverse problem obtained on the
     candidate set \code{candest} from the final fitted surrogate.}
-  \item{maxei}{ An array of length \code{nadd}, it collects the maximum
+  \item{maxei}{ A vector of length \code{nadd}, it collects the maximum
     value of the EI criterion in each iteration of the sequential design
     approach.}
 }
