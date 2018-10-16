@@ -18,7 +18,7 @@
 \usage{
 lasvdGP(design, resp, X0=design, n0=10, nn=20,
         nfea = min(1000,nrow(design)),
-        nsvd = nn, nadd = 1, frac = .9, gstart = 0.0001,
+        nsvd = nn, nadd = 1, frac = .95, gstart = 0.0001,
         resvdThres = min(5, nn-n0), every = min(5,nn-n0),
         nstarts = 5,centralize=FALSE, maxit=100,
         errlog = "", nthread = 4, clutype="PSOCK")
@@ -66,7 +66,7 @@ lasvdGP(design, resp, X0=design, n0=10, nn=20,
   }
   \item{frac}{
     The threshold in the cumulative percentage criterion to select the
-    number of SVD bases. The default value is 0.9.
+    number of SVD bases. The default value is 0.95.
   }
   \item{gstart}{
     The starting number and upper bound of for estimating the nugget

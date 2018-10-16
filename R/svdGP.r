@@ -61,7 +61,7 @@ fitgps_lmean <- function(resp,design,test,nstarts=5,d=NULL,gstart=0.0001,type=c(
     return(pred)
 
 }
-svdgpsepms <- function(X0,design,resp,frac=.9,nstarts=5,
+svdgpsepms <- function(X0,design,resp,frac=.95,nstarts=5,
                        mtype=c("zmean","cmean","lmean"),
                        d=NULL,gstart=0.0001,nthread=4,clutype="PSOCK")
 {
@@ -89,7 +89,7 @@ svdgpsepms <- function(X0,design,resp,frac=.9,nstarts=5,
     return(ret)
 }
 svdGP <- function(design,resp,X0=design,nstarts=5,gstart=0.0001,
-                  frac=.9,centralize=FALSE,nthread=4,clutype="PSOCK")
+                  frac=.95,centralize=FALSE,nthread=4,clutype="PSOCK")
 {
     if(.Machine$sizeof.pointer != 8)
     {

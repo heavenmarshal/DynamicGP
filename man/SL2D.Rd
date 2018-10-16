@@ -28,7 +28,7 @@ SL2D(design,resp,yobs,candidate,frac=.95,
     where \eqn{L} is the length of the time series outputs, \eqn{N} is
     the number of design points.}
 
-  \item{yobs}{ An array of length \eqn{L} of the time-series valued
+  \item{yobs}{ A vector of length \eqn{L} of the time-series valued
     field observations or the target response.
   }
 
@@ -38,12 +38,12 @@ SL2D(design,resp,yobs,candidate,frac=.95,
 
   \item{frac}{
     The threshold in the cumulative percentage criterion to select the
-    number of SVD bases. The default value is 0.9.
+    number of SVD bases. The default value is 0.95.
   }
 
   \item{mtype}{ The type of mean functions for the GP models. The choice
     "zmean" denotes zero-mean, "cmean" indicates constant-mean, "lmean" indicates
-    linear-mean.
+    linear-mean. The default choice is "zmean".
   }
   \item{gstart}{
     The starting number and upper bound of for estimating the nugget

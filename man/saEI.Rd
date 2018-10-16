@@ -1,14 +1,15 @@
 \name{saEI}
 \alias{saEI}
 
-\title{Saddlepoint Approximated Expected Improvement Criterion for
-  the Squential Design for Inverse Problems}
+\title{Saddlepoint Approximate Expected Improvement Criterion for
+  the Sequential Design for Inverse Problems}
 
 \description{This function performs the squential design procedure for
   the inverse problem. It starts from an initial design set \code{xi}
   and selects the follow-up design points as per an expected improvement
   (EI) criterion. The values of the EI criterion is numerically
-  approximated by the saddlepoint approximation technique. After
+  approximated by the saddlepoint approximation technique in Huang and
+  Oosterlee (2011). After
   the selection of design points, the solution of the inverse problem is
   estimated either by the \code{ESL2D} approach or by the \code{SL2D}
   approach. Details are provided in Chapter 4 of Zhang (2018).
@@ -17,7 +18,7 @@
 saEI(xi,yi,yobs,nadd,candei,candest,func,...,
      mtype=c("zmean","cmean","lmean"),
      estsol=c("ESL2D","SL2D"),
-     frac=.9,gstart=0.0001,
+     frac=.95,gstart=0.0001,
      nthread=4,clutype="PSOCK")
 }
 \arguments{
@@ -29,7 +30,7 @@ saEI(xi,yi,yobs,nadd,candei,candest,func,...,
     where \eqn{L} is the length of the time series outputs, \code{N0} is
     the number of design points.}
 
-  \item{yobs}{ An array of length \eqn{L} of the time-series valued
+  \item{yobs}{ A vector of length \eqn{L} of the time-series valued
     field observations or the target response.}
 
   \item{nadd}{ The number of the follow-up design points selected by
@@ -51,14 +52,15 @@ saEI(xi,yi,yobs,nadd,candei,candest,func,...,
 
 \item{mtype}{ The type of mean functions for the GP models. The choice
     "zmean" denotes zero-mean, "cmean" indicates constant-mean, "lmean" indicates
-    linear-mean.}
+    linear-mean. The default choice is "zmean".}
 
   \item{estsol}{ The method for estimating the final solution to the inverse
     problem after all follow-up design points are included, "ESL2D"
-    denotes the ESL2D approach, "SL2D" denotes the SL2D approach.}
+    denotes the ESL2D approach, "SL2D" denotes the SL2D approach. The
+    default choice is "ESL2D".}
 
   \item{frac}{ The threshold in the cumulative percentage criterion to select the
-    number of SVD bases. The default value is 0.9.
+    number of SVD bases. The default value is 0.95.
   }
 
   \item{gstart}{
@@ -100,8 +102,13 @@ saEI(xi,yi,yobs,nadd,candei,candest,func,...,
 
 \seealso{\code{\link{ESL2D}}, \code{\link{SL2D}}.}
 
-\references{ Zhang, R. (2018) \emph{Modeling and Analysis of Dynamic Computer Experiments},
-    PhD thesis, Queen's University.}
+\references{
+Huang, X. and Oosterlee, C. W. (2011) \emph{Saddlepoint approximations
+  for expectations and an application to CDO pricing}, SIAM Journal on
+Financial Mathematics, 2(1) 692-714.
+
+Zhang, R. (2018) \emph{Modeling and Analysis of Dynamic Computer Experiments},
+PhD thesis, Queen's University.}
 \examples{
   library("lhs")
   forretal <- function(x,t,shift=1)

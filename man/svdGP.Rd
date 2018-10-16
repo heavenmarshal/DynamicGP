@@ -9,7 +9,7 @@
 }
 \usage{
 svdGP(design,resp,X0=design,nstarts=5,gstart=0.0001,
-      frac=.9,centralize=FALSE,nthread=4,clutype="PSOCK")
+      frac=.95,centralize=FALSE,nthread=4,clutype="PSOCK")
 }
 \arguments{
     \item{design}{ An \eqn{N} by \eqn{d} matrix of \eqn{N} training/design
@@ -37,7 +37,7 @@ svdGP(design,resp,X0=design,nstarts=5,gstart=0.0001,
   }
   \item{frac}{
     The threshold in the cumulative percentage criterion to select the
-    number of SVD bases. The default value is 0.9.
+    number of SVD bases. The default value is 0.95.
   }
   \item{centralize}{
     If \code{centralize=TRUE} the response matrix will be centralized

@@ -12,7 +12,7 @@
   library.}
 
 \usage{
-knnsvdGP(design,resp, X0=design, nn=20, nsvd = nn, frac = .9,
+knnsvdGP(design,resp, X0=design, nn=20, nsvd = nn, frac = .95,
          gstart = 0.0001, nstarts = 5,centralize=FALSE, maxit=100,
          errlog = "", nthread = 4, clutype="PSOCK")
 }
@@ -40,7 +40,7 @@ knnsvdGP(design,resp, X0=design, nn=20, nsvd = nn, frac = .9,
   }
   \item{frac}{
     The threshold in the cumulative percentage criterion to select the
-    number of SVD bases. The default value is 0.9.
+    number of SVD bases. The default value is 0.95.
   }
   \item{gstart}{
     The starting number and upper bound of for estimating the nugget
