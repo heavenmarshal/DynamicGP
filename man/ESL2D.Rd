@@ -2,15 +2,15 @@
 \alias{ESL2D}
 
 \title{
-  Expected Square \eqn{L_2} Discrepancy Approach for Estimating the
+  Expected Squared \eqn{L_2} Discrepancy Approach for Estimating the
   Solution to the Inverse Problem
 }
 
 \description{This function fits an SVD-based GP model on the
-  design set \code{design} and response matrix \code{resp}, and
-  minimizes the expected square \eqn{L_{2}} discrepancy on the
-  candidate set \code{candidate} to estimate the solution to the inverse
-  problem. The detials are provided in Chapter 4 of Zhang (2018).
+  training dataset \code{design} and response matrix \code{resp}, and
+  minimizes the expected squared \eqn{L_{2}} discrepancy on the
+  test set \code{candidate} to estimate the solution to the inverse
+  problem. The details are provided in Chapter 4 of Zhang (2018).
 }
 \usage{
 ESL2D(design,resp,yobs,candidate,frac=.95,
@@ -44,15 +44,15 @@ ESL2D(design,resp,yobs,candidate,frac=.95,
     linear-mean. The default choice is "zmean".
   }
   \item{gstart}{
-    The starting number and upper bound of for estimating the nugget
+    The starting number and upper bound for estimating the nugget
     parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the nugget
-    will be fixed at \code{sqrt(.Machine$double.eps)}, since it is
+    will be fixed at \code{sqrt(.Machine$double.eps)}, since \code{sqrt(.Machine$double.eps)} is
     the lower bound of the nugget term. The default value is 0.0001.
   }
 }
 
 \value{
-  \item{xhat}{The estimated solution to the inverse problem obtained on the
+  \item{xhat}{The estimated solution to the inverse problem obtained from the
     candidate set \code{candidate}}.
 }
 
@@ -60,12 +60,12 @@ ESL2D(design,resp,yobs,candidate,frac=.95,
 
   C. Devon Lin \email{devon.lin@queensu.ca},
 
-  Pritam Ranjan \email{pritam.ranjan@gmail.com}}
+  Pritam Ranjan \email{pritamr@iimidr.ac.in}}
 
-\seealso{\code{\link{SL2D}}, \code{\link{saEI}}.}
+\seealso{\code{\link{SL2D}}, \code{\link{saEI}}, \code{\link{svdGP}.}
 
 \references{ Zhang, R. (2018) \emph{Modeling and Analysis of Dynamic Computer Experiments},
-    PhD thesis, Queen's University.}
+    PhD thesis, Queen's University, ON, Canada.}
 \examples{
   library("lhs")
   forretal <- function(x,t,shift=1)
@@ -78,13 +78,20 @@ ESL2D(design,resp,yobs,candidate,frac=.95,
   }
   timepoints <- seq(0,1,len=200)
   design <- lhs::randomLHS(30,3)
-  candidate <- lhs::randomLHS(1000,3)
+  candidate <- lhs::randomLHS(500,3)
+  candidate <- rbind(candidate,design)
+
   ## evaluate the response matrix on the design matrix
   resp <- apply(design,1,forretal,timepoints)
   x0 <- runif(3)
   y0 <- forretal(x0,timepoints)
   yobs <- y0+rnorm(200,0,sd(y0)/sqrt(50))
   xhat <- ESL2D(design,resp,yobs,candidate)
+  yhat <- forretal(xhat,timepoints)
+
+  ## draw figuure to illustrate
+  plot(y0,ylim=c(min(y0,yhat),max(y0,yhat)),type="l")
+  lines(yhat,col="red")
 }
 \keyword{GP model}
 \keyword{Inverse problem}

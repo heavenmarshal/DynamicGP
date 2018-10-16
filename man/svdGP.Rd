@@ -9,7 +9,7 @@
 }
 \usage{
 svdGP(design,resp,X0=design,nstarts=5,gstart=0.0001,
-      frac=.95,centralize=FALSE,nthread=4,clutype="PSOCK")
+      frac=.95,centralize=FALSE,nthread=1,clutype="PSOCK")
 }
 \arguments{
     \item{design}{ An \eqn{N} by \eqn{d} matrix of \eqn{N} training/design
@@ -30,11 +30,13 @@ svdGP(design,resp,X0=design,nstarts=5,gstart=0.0001,
   }
 
   \item{gstart}{
-    The starting number and upper bound of for estimating the nugget
+    The starting number and upper bound for estimating the nugget
     parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the nugget
-    will be fixed at \code{sqrt(.Machine$double.eps)}, since it is
-    the lower bound of the nugget term. The default value is 0.0001.
+    will be fixed at \code{sqrt(.Machine$double.eps)}, since
+    \code{sqrt(.Machine$double.eps)} is the lower bound of the nugget
+    term. The default value is 0.0001.
   }
+
   \item{frac}{
     The threshold in the cumulative percentage criterion to select the
     number of SVD bases. The default value is 0.95.
@@ -48,7 +50,7 @@ svdGP(design,resp,X0=design,nstarts=5,gstart=0.0001,
   \item{nthread}{
     The number of threads (processes) used in parallel execution of this
     function. \code{nthread=1} implies no parallelization. The default
-    value is 4.
+    value is 1.
   }
   \item{clutype}{
     The type of cluster in the R package "parallel" to perform
@@ -70,7 +72,7 @@ svdGP(design,resp,X0=design,nstarts=5,gstart=0.0001,
 
   C. Devon Lin \email{devon.lin@queensu.ca},
 
-  Pritam Ranjan \email{pritam.ranjan@gmail.com}}
+  Pritam Ranjan \email{pritamr@iimidr.ac.in}}
 \seealso{\code{\link{knnsvdGP}}, \code{\link{lasvdGP}}.}
 \examples{
 library("lhs")

@@ -4,27 +4,22 @@
 \title{Saddlepoint Approximate Expected Improvement Criterion for
   the Sequential Design for Inverse Problems}
 
-\description{This function performs the squential design procedure for
+\description{This function performs the sequential design procedure for
   the inverse problem. It starts from an initial design set \code{xi}
-  and selects the follow-up design points as per an expected improvement
-  (EI) criterion. The values of the EI criterion is numerically
-  approximated by the saddlepoint approximation technique in Huang and
-  Oosterlee (2011). After
-  the selection of design points, the solution of the inverse problem is
-  estimated either by the \code{ESL2D} approach or by the \code{SL2D}
-  approach. Details are provided in Chapter 4 of Zhang (2018).
-}
-\usage{
-saEI(xi,yi,yobs,nadd,candei,candest,func,...,
-     mtype=c("zmean","cmean","lmean"),
-     estsol=c("ESL2D","SL2D"),
-     frac=.95,gstart=0.0001,
-     nthread=4,clutype="PSOCK")
-}
-\arguments{
+  and selects the follow-up design points from the candidate set
+  \code{candei} as per the expected improvement (EI) criterion which is
+  numerically approximated by the saddlepoint approximation technique in
+  Huang and Oosterlee (2011). The surrogate is refitted using the
+  augmented data via \code{svdGP}. After the selection of \code{nadd}
+  follow-up points, the solution of the inverse problem is estimated
+  either by the \code{ESL2D} approach or by the \code{SL2D}
+  approach. Details are provided in Chapter 4 of Zhang (2018).  }
+
+\usage{ saEI(xi,yi,yobs,nadd,candei,candest,func,...,
+  mtype=c("zmean","cmean","lmean"), estsol=c("ESL2D","SL2D"),
+  frac=.95,gstart=0.0001, nthread=1,clutype="PSOCK") } \arguments{
   \item{xi}{ An \code{N0} by \eqn{d} matrix of \code{N0} initial design
-    points.
-  }
+  points.  }
 
   \item{yi}{ An \eqn{L} by \code{N0} response matrix of \code{xi},
     where \eqn{L} is the length of the time series outputs, \code{N0} is
@@ -64,16 +59,16 @@ saEI(xi,yi,yobs,nadd,candei,candest,func,...,
   }
 
   \item{gstart}{
-    The starting number and upper bound of for estimating the nugget
+    The starting number and upper bound for estimating the nugget
     parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the nugget
-    will be fixed at \code{sqrt(.Machine$double.eps)}, since it is
+    will be fixed at \code{sqrt(.Machine$double.eps)}, since \code{sqrt(.Machine$double.eps)} is
     the lower bound of the nugget term. The default value is 0.0001.
   }
 
   \item{nthread}{
     The number of threads (processes) used in parallel execution of this
     function. \code{nthread=1} implies no parallelization. The default
-    value is 4.
+    value is 1.
   }
 
   \item{clutype}{
@@ -88,7 +83,7 @@ saEI(xi,yi,yobs,nadd,candei,candest,func,...,
     which includes both the initial and the follow-up design points.}
   \item{yy}{The response matrix collected on the design set \code{xx}.}
   \item{xhat}{The estimated solution to the inverse problem obtained on the
-    candidate set \code{candest}.}
+    candidate set \code{candest} from the final fitted surrogate.}
   \item{maxei}{ An array of length \code{nadd}, it collects the maximum
     value of the EI criterion in each iteration of the sequential design
     approach.}
@@ -98,9 +93,9 @@ saEI(xi,yi,yobs,nadd,candei,candest,func,...,
 
   C. Devon Lin \email{devon.lin@queensu.ca},
 
-  Pritam Ranjan \email{pritam.ranjan@gmail.com}}
+  Pritam Ranjan \email{pritamr@iimidr.ac.in}}
 
-\seealso{\code{\link{ESL2D}}, \code{\link{SL2D}}.}
+\seealso{\code{\link{ESL2D}}, \code{\link{SL2D}}, \code{\link{svdGP}.}
 
 \references{
 Huang, X. and Oosterlee, C. W. (2011) \emph{Saddlepoint approximations
@@ -108,7 +103,7 @@ Huang, X. and Oosterlee, C. W. (2011) \emph{Saddlepoint approximations
 Financial Mathematics, 2(1) 692-714.
 
 Zhang, R. (2018) \emph{Modeling and Analysis of Dynamic Computer Experiments},
-PhD thesis, Queen's University.}
+PhD thesis, Queen's University, ON, Canada.}
 \examples{
   library("lhs")
   forretal <- function(x,t,shift=1)
@@ -121,15 +116,22 @@ PhD thesis, Queen's University.}
   }
   timepoints <- seq(0,1,len=200)
   xi <- lhs::randomLHS(30,3)
-  candei <- lhs::randomLHS(1000,3)
-  candest <- lhs::randomLHS(1000,3)
+  candei <- lhs::randomLHS(500,3)
+  candest <- lhs::randomLHS(500,3)
+  candest <- rbind(candest, xi)
+
   ## evaluate the response matrix on the design matrix
   yi <- apply(xi,1,forretal,timepoints)
   x0 <- runif(3)
   y0 <- forretal(x0,timepoints)
   yobs <- y0+rnorm(200,0,sd(y0)/sqrt(50))
   ret <- saEI(xi,yi,yobs,1,candei,candest,forretal,timepoints,
-              nthread=1)
+                nthread=1)
+  yhat <- forretal(ret$xhat,timepoints)
+
+  ## draw figuure to illustrate
+  plot(y0,ylim=c(min(y0,yhat),max(y0,yhat)),type="l")
+  lines(yhat,col="red")
 }
 \keyword{GP model}
 \keyword{Inverse problem}

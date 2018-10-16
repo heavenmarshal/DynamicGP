@@ -4,11 +4,9 @@
 
 \title{Modelling and Analysis of Dynamic Computer Experiments}
 
-\description{This R package provides functions for emulation and the
-  inverse problems in dynamic computer experiments. For emulating
-  dynamic computer experiments, three functions are included. The
-  function \code{svdGP} fits full SVD-based GP model which is
-  computationally demanding for large-scale dyanmic computer
+\description{For emulating dynamic computer experiments, three functions
+  are included. The function \code{svdGP} fits full SVD-based GP model
+  which is computationally demanding for large-scale dyanmic computer
   experiments. As is well known, the time complexity of fitting a GP
   model is \eqn{O(N^3)} where \eqn{N} is the number of training/design
   points. Since fitting a common GP model for really large \eqn{N} would
@@ -31,23 +29,24 @@
 
   For the inverse problem in dynamic computer experiments, we also
   provide three functions. The function \code{ESL2D} minimizes the
-  expected square \eqn{L_{2}} discrepancy between the target response
+  expected squared \eqn{L_{2}} discrepancy between the target response
   and the simulator outputs to estimate the solution to the inverse
-  problem. A naive estimation approach \code{SL2D} minimizes the square
-  \eqn{L_{2}} discrepancy between the target response and the predicted
-  mean of the SVD-based GP model. The function \code{saEI} performs the
-  squential design procedure for the inverse problem. It selects the
-  follow-up design points as per an expected improvement criterion whose
-  values are numerically approximated by the saddlepoint approximation
+  problem, where the expectation is taken with respect to the predictive
+  distribution of the \code{svdGP} model. A naive estimation approach
+  \code{SL2D} simply minimizes the squared \eqn{L_{2}} discrepancy
+  between the target response and the predicted mean response of the
+  SVD-based GP model. The function \code{saEI} performs the squential
+  design procedure for the inverse problem. It selects the follow-up
+  design points as per an expected improvement criterion whose values
+  are numerically approximated by the saddlepoint approximation
   technique. Details of the three methods for the inverse problem are
-  provided in Chapter 4 of Zhang (2018).
-}
+  provided in Chapter 4 of Zhang (2018).  }
 
 \author{Ru Zhang \email{heavenmarshal@gmail.com},
 
   C. Devon Lin \email{devon.lin@queensu.ca},
 
-  Pritam Ranjan \email{pritam.ranjan@gmail.com}}
+  Pritam Ranjan \email{pritamr@iimidr.ac.in}}
 
 \references{Gramacy, R. B. and Apley, D. W. (2015) \emph{Local Gaussian
     process approximation for large computer experiments}, Journal of
@@ -59,7 +58,7 @@
   10.1080/10618600.2018.1473778.
 
   Zhang, R. (2018) \emph{Modeling and Analysis of Dynamic Computer Experiments},
-    PhD thesis, Queen's University.
+    PhD thesis, Queen's University, ON, Canada.
 }
 
 \keyword{GP model}

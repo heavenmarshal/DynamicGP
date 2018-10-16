@@ -3,7 +3,7 @@ lasvdGP <- function(design, resp, X0=design, n0=10, nn=20,
                     nsvd = nn, nadd = 1, frac = .95, gstart = 0.0001,
                     resvdThres = min(5, nn-n0), every = min(5,nn-n0),
                     nstarts = 5,centralize=FALSE, maxit=100,
-                    errlog = "", nthread = 4, clutype="PSOCK")
+                    errlog = "", nthread = 1, clutype="PSOCK")
 {
     if(.Machine$sizeof.pointer != 8)
     {

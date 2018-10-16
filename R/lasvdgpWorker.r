@@ -38,7 +38,7 @@ lasvdgpParal <- function(X0, design, resp, n0, nn,
                          resvdThres = min(5, nn-n0),
                          every = min(5,nn-n0),nstarts=1,
                          maxit=100, verb=0, errlog = "",
-                         nthread = 4, clutype="PSOCK")
+                         nthread = 1, clutype="PSOCK")
 {
     N <- nrow(design)
     m <- ncol(design)
@@ -72,7 +72,7 @@ lasvdgpOMP <- function(X0, design, resp, n0, nn,
                        resvdThres = min(5, nn-n0),
                        every = min(5,nn-n0),nstarts=1,
                        maxit=100, verb=0, errlog = "",
-                       nthread = 4, clutype="OMP")
+                       nthread = 1, clutype="OMP")
 {
     N <- nrow(design)
     m <- ncol(design)
@@ -137,7 +137,7 @@ lasvdgpmsOMP <- function(X0, design, resp, n0, nn,
                          resvdThres = min(5, nn-n0),
                          every = min(5,nn-n0),
                          nstarts = 5, maxit=100, verb=0,
-                         errlog = "",nthread=4, clutype="OMP")
+                         errlog = "",nthread=1, clutype="OMP")
 {
     N <- nrow(design)
     m <- ncol(design)
@@ -172,7 +172,7 @@ lasvdgpmsParal <- function(X0, design, resp, n0, nn,
                            resvdThres = min(5, nn-n0),
                            every = min(5,nn-n0),
                            nstarts = 5, maxit=100, verb=0,
-                           errlog="",nthread = 4, clutype="PSOCK")
+                           errlog="",nthread = 1, clutype="PSOCK")
 {
     N <- nrow(design)
     m <- ncol(design)

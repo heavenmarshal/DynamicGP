@@ -2,7 +2,7 @@ saEI <- function(xi,yi,yobs,nadd,candei,candest,func,...,
                  mtype=c("zmean","cmean","lmean"),
                  estsol=c("ESL2D","SL2D"),
                  frac=.95,gstart=0.0001,
-                 nthread=4, clutype="PSOCK")
+                 nthread=1, clutype="PSOCK")
 {
     if(.Machine$sizeof.pointer != 8)
     {

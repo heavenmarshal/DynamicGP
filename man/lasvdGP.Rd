@@ -21,7 +21,7 @@ lasvdGP(design, resp, X0=design, n0=10, nn=20,
         nsvd = nn, nadd = 1, frac = .95, gstart = 0.0001,
         resvdThres = min(5, nn-n0), every = min(5,nn-n0),
         nstarts = 5,centralize=FALSE, maxit=100,
-        errlog = "", nthread = 4, clutype="PSOCK")
+        errlog = "", nthread = 1, clutype="PSOCK")
 }
 
 \arguments{
@@ -69,10 +69,11 @@ lasvdGP(design, resp, X0=design, n0=10, nn=20,
     number of SVD bases. The default value is 0.95.
   }
   \item{gstart}{
-    The starting number and upper bound of for estimating the nugget
+    The starting number and upper bound for estimating the nugget
     parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the nugget
-    will be fixed at \code{sqrt(.Machine$double.eps)}, since it is
-    the lower bound of the nugget term. The default value is 0.0001.
+    will be fixed at \code{sqrt(.Machine$double.eps)}, since
+    \code{sqrt(.Machine$double.eps)} is the lower bound of the nugget
+    term. The default value is 0.0001.
   }
 
   \item{resvdThres}{
@@ -114,7 +115,7 @@ lasvdGP(design, resp, X0=design, n0=10, nn=20,
   \item{nthread}{
     The number of threads (processes) used in parallel execution of this
     function. \code{nthread=1} implies no parallelization. The default
-    value is 4.
+    value is 1.
   }
   \item{clutype}{
     The type of parallization utilized by this function. If \code{clutype="OMP"},
@@ -146,7 +147,7 @@ lasvdGP(design, resp, X0=design, n0=10, nn=20,
 
   C. Devon Lin \email{devon.lin@queensu.ca},
 
-  Pritam Ranjan \email{pritam.ranjan@gmail.com}}
+  Pritam Ranjan \email{pritamr@iimidr.ac.in}}
 
 \seealso{\code{\link{knnsvdGP}}, \code{\link{svdGP}}.}
 
