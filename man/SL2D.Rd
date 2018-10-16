@@ -64,7 +64,7 @@ SL2D(design,resp,yobs,candidate,frac=.95,
 
   Pritam Ranjan \email{pritamr@iimidr.ac.in}}
 
-\seealso{\code{\link{ESL2D}}, \code{\link{saEI}}, \code{\link{svdGP}.}
+\seealso{\code{\link{ESL2D}}, \code{\link{saEI}}, \code{\link{svdGP}}.}
 
 \references{ Zhang, R. (2018) \emph{Modeling and Analysis of Dynamic Computer Experiments},
     PhD thesis, Queen's University, ON, Canada.}
@@ -89,9 +89,10 @@ SL2D(design,resp,yobs,candidate,frac=.95,
   y0 <- forretal(x0,timepoints)
   yobs <- y0+rnorm(200,0,sd(y0)/sqrt(50))
   xhat <- SL2D(design,resp,yobs,candidate)
+  yhat <- forretal(xhat,timepoints)
 
   ## draw figuure to illustrate
-  plot(y0,ylim=c(min(y0,yhat),max(y0,yhat)),type="l")
+  plot(y0,ylim=c(min(y0,yhat),max(y0,yhat)))
   lines(yhat,col="red")
 }
 \keyword{GP model}

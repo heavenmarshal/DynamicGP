@@ -95,7 +95,7 @@
 
   Pritam Ranjan \email{pritamr@iimidr.ac.in}}
 
-\seealso{\code{\link{ESL2D}}, \code{\link{SL2D}}, \code{\link{svdGP}.}
+\seealso{\code{\link{ESL2D}}, \code{\link{SL2D}}, \code{\link{svdGP}}.}
 
 \references{
 Huang, X. and Oosterlee, C. W. (2011) \emph{Saddlepoint approximations
@@ -130,7 +130,7 @@ PhD thesis, Queen's University, ON, Canada.}
   yhat <- forretal(ret$xhat,timepoints)
 
   ## draw figuure to illustrate
-  plot(y0,ylim=c(min(y0,yhat),max(y0,yhat)),type="l")
+  plot(y0,ylim=c(min(y0,yhat),max(y0,yhat)))
   lines(yhat,col="red")
 }
 \keyword{GP model}
