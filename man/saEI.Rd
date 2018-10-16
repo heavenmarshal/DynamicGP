@@ -58,12 +58,11 @@
     number of SVD bases. The default value is 0.95.
   }
 
-  \item{gstart}{
-    The starting number and upper bound for estimating the nugget
-    parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the nugget
-    will be fixed at \code{sqrt(.Machine$double.eps)}, since \code{sqrt(.Machine$double.eps)} is
-    the lower bound of the nugget term. The default value is 0.0001.
-  }
+  \item{gstart}{ The starting number and upper bound for estimating the
+    nugget parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the
+    nugget parameter will be fixed at \code{sqrt(.Machine$double.eps)},
+    since \code{sqrt(.Machine$double.eps)} is the lower bound of the
+    nugget term. The default value is 0.0001.  }
 
   \item{nthread}{
     The number of threads (processes) used in parallel execution of this
@@ -129,7 +128,7 @@ PhD thesis, Queen's University, ON, Canada.}
                 nthread=1)
   yhat <- forretal(ret$xhat,timepoints)
 
-  ## draw figuure to illustrate
+  ## draw a figure to illustrate
   plot(y0,ylim=c(min(y0,yhat),max(y0,yhat)))
   lines(yhat,col="red")
 }

@@ -32,7 +32,7 @@ svdGP(design,resp,X0=design,nstarts=5,gstart=0.0001,
   \item{gstart}{
     The starting number and upper bound for estimating the nugget
     parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the nugget
-    will be fixed at \code{sqrt(.Machine$double.eps)}, since
+    parameter will be fixed at \code{sqrt(.Machine$double.eps)}, since
     \code{sqrt(.Machine$double.eps)} is the lower bound of the nugget
     term. The default value is 0.0001.
   }
@@ -87,6 +87,7 @@ forretal <- function(x,t,shift=1)
 timepoints <- seq(0,1,len=200)
 design <- lhs::randomLHS(50,3)
 test <- lhs::randomLHS(50,3)
+
 ## evaluate the response matrix on the design matrix
 resp <- apply(design,1,forretal,timepoints)
 

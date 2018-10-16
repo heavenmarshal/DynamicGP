@@ -45,7 +45,7 @@ knnsvdGP(design,resp, X0=design, nn=20, nsvd = nn, frac = .95,
   \item{gstart}{
     The starting number and upper bound for estimating the nugget
     parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the nugget
-    will be fixed at \code{sqrt(.Machine$double.eps)}, since
+    parameter will be fixed at \code{sqrt(.Machine$double.eps)}, since
     \code{sqrt(.Machine$double.eps)} is the lower bound of the nugget
     term. The default value is 0.0001.
   }
@@ -129,11 +129,13 @@ forretal <- function(x,t,shift=1)
 timepoints <- seq(0,1,len=200)
 design <- lhs::randomLHS(100,3)
 test <- lhs::randomLHS(20,3)
+
 ## evaluate the response matrix on the design matrix
 resp <- apply(design,1,forretal,timepoints)
 
 nn <- 20
 gs <- sqrt(.Machine$double.eps)
+
 ## knnsvdGP with mutiple (5) start points for GP model estimation
 ## It use the R package "parallel" for parallelization
 retknnmsp <- knnsvdGP(design,resp,test,nn,frac=.95,gstart=gs,

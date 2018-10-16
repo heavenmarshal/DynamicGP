@@ -43,13 +43,12 @@ ESL2D(design,resp,yobs,candidate,frac=.95,
     "zmean" denotes zero-mean, "cmean" indicates constant-mean, "lmean" indicates
     linear-mean. The default choice is "zmean".
   }
-  \item{gstart}{
-    The starting number and upper bound for estimating the nugget
-    parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the nugget
-    will be fixed at \code{sqrt(.Machine$double.eps)}, since \code{sqrt(.Machine$double.eps)} is
-    the lower bound of the nugget term. The default value is 0.0001.
-  }
-}
+
+  \item{gstart}{ The starting number and upper bound for estimating the
+    nugget parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the
+    nugget parameter will be fixed at \code{sqrt(.Machine$double.eps)},
+    since \code{sqrt(.Machine$double.eps)} is the lower bound of the
+    nugget term. The default value is 0.0001.} }
 
 \value{
   \item{xhat}{The estimated solution to the inverse problem obtained from the
@@ -89,7 +88,7 @@ ESL2D(design,resp,yobs,candidate,frac=.95,
   xhat <- ESL2D(design,resp,yobs,candidate)
   yhat <- forretal(xhat,timepoints)
 
-  ## draw figuure to illustrate
+  ## draw a figure to illustrate
   plot(y0,ylim=c(min(y0,yhat),max(y0,yhat)))
   lines(yhat,col="red")
 }
